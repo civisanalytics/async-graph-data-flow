@@ -1,0 +1,831 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="API Reference" href="api.html" /><link rel="prev" title="Quickstart" href="quickstart.html" />
+
+    <meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
+        <title>More Examples - async-graph-data-flow documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">async-graph-data-flow  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">async-graph-data-flow  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">More Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="more-examples">
+<span id="id1"></span><h1>More Examples<a class="headerlink" href="#more-examples" title="Permalink to this heading">#</a></h1>
+<p>While some of the examples below are meant to demonstrate the features
+of the <code class="docutils literal notranslate"><span class="pre">async-graph-data-flow</span></code> library,
+others (e.g., running a synchronous function, sharing state across functions)
+show what could be possible – we aren’t limited by the implemented features!
+If you have questions or would like to contribute an example of your own,
+please open an issue at the
+<a class="reference external" href="https://github.com/civisanalytics/async-graph-data-flow">GitHub repository</a>
+for discussion.</p>
+<section id="customizable-start-nodes">
+<h2>Customizable Start Nodes<a class="headerlink" href="#customizable-start-nodes" title="Permalink to this heading">#</a></h2>
+<p>When <a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor" title="async_graph_data_flow.AsyncExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncExecutor</span></code></a>’s <a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor.execute" title="async_graph_data_flow.AsyncExecutor.execute"><code class="xref py py-func docutils literal notranslate"><span class="pre">execute()</span></code></a>
+is called,
+by default the start nodes (= nodes without incoming edges) of the graph are automatically detected and called.
+To override this default behavior,
+use the keyword argument <code class="docutils literal notranslate"><span class="pre">start_nodes</span></code> at <a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor.execute" title="async_graph_data_flow.AsyncExecutor.execute"><code class="xref py py-func docutils literal notranslate"><span class="pre">execute()</span></code></a>
+to select which nodes to execute instead and/or supply the arguments to whichever nodes you’ve selected.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">async_graph_data_flow</span> <span class="kn">import</span> <span class="n">AsyncExecutor</span><span class="p">,</span> <span class="n">AsyncGraph</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">node1</span><span class="p">():</span>
+    <span class="k">yield</span> <span class="s2">&quot;hello&quot;</span>
+    <span class="k">yield</span> <span class="s2">&quot;world&quot;</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">node2</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Transformer received: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="s2">&quot;data1&quot;</span>
+    <span class="k">yield</span> <span class="s2">&quot;data2&quot;</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">node3</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data in Load: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">yield</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+    <span class="n">etl_graph</span> <span class="o">=</span> <span class="n">AsyncGraph</span><span class="p">()</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node1</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node2</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node3</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;node1&quot;</span><span class="p">,</span> <span class="s2">&quot;node2&quot;</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;node2&quot;</span><span class="p">,</span> <span class="s2">&quot;node3&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graph: </span><span class="si">{</span><span class="n">etl_graph</span><span class="o">.</span><span class="n">nodes_to_edges</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">etl_executor</span> <span class="o">=</span> <span class="n">AsyncExecutor</span><span class="p">(</span><span class="n">etl_graph</span><span class="p">)</span>
+    <span class="n">etl_executor</span><span class="o">.</span><span class="n">turn_on_data_flow_logging</span><span class="p">()</span>
+<span class="hll">    <span class="n">etl_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">start_nodes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;node2&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;new_data&quot;</span><span class="p">,)})</span>
+</span>
+    <span class="c1"># Output:</span>
+    <span class="c1"># -------</span>
+    <span class="c1"># Graph: {&#39;node1&#39;: {&#39;node2&#39;}, &#39;node2&#39;: {&#39;node3&#39;}, &#39;node3&#39;: set()}</span>
+    <span class="c1"># Transformer received: new_data</span>
+    <span class="c1"># Data in Load: data1</span>
+    <span class="c1"># Data in Load: data2</span>
+    <span class="c1"># INFO:async_graph_data_flow.executor: node1 - in=0, out=0, err=0</span>
+    <span class="c1"># INFO:async_graph_data_flow.executor: node2 - in=0, out=2, err=0</span>
+    <span class="c1"># INFO:async_graph_data_flow.executor: node3 - in=2, out=2, err=0</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">async_graph_data_flow</span> <span class="kn">import</span> <span class="n">AsyncExecutor</span><span class="p">,</span> <span class="n">AsyncGraph</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">node1</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;node1 received: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">data</span>
+    <span class="k">yield</span> <span class="s2">&quot;hello&quot;</span>
+    <span class="k">yield</span> <span class="s2">&quot;world&quot;</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">node2</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;node2 received: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">data</span>
+    <span class="k">yield</span> <span class="s2">&quot;data1&quot;</span>
+    <span class="k">yield</span> <span class="s2">&quot;data2&quot;</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">node3</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;node3 received: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">yield</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">AsyncGraph</span><span class="p">()</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node1</span><span class="p">)</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node2</span><span class="p">)</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node3</span><span class="p">)</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;node1&quot;</span><span class="p">,</span> <span class="s2">&quot;node3&quot;</span><span class="p">)</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;node2&quot;</span><span class="p">,</span> <span class="s2">&quot;node3&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graph: </span><span class="si">{</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes_to_edges</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">executor</span> <span class="o">=</span> <span class="n">AsyncExecutor</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+<span class="hll">    <span class="n">executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">start_nodes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;node1&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">,),</span> <span class="s2">&quot;node2&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">,)})</span>
+</span>
+    <span class="c1"># Output:</span>
+    <span class="c1"># -------</span>
+    <span class="c1"># Graph: {&#39;node1&#39;: {&#39;node3&#39;}, &#39;node2&#39;: {&#39;node3&#39;}, &#39;node3&#39;: set()}</span>
+    <span class="c1"># node1 received: foo</span>
+    <span class="c1"># node2 received: bar</span>
+    <span class="c1"># node3 received: foo</span>
+    <span class="c1"># node3 received: hello</span>
+    <span class="c1"># node3 received: world</span>
+    <span class="c1"># node3 received: bar</span>
+    <span class="c1"># node3 received: data1</span>
+    <span class="c1"># node3 received: data2</span>
+</pre></div>
+</div>
+</section>
+<section id="data-flow-statistics-and-logging">
+<h2>Data Flow Statistics and Logging<a class="headerlink" href="#data-flow-statistics-and-logging" title="Permalink to this heading">#</a></h2>
+<p><a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor" title="async_graph_data_flow.AsyncExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncExecutor</span></code></a>’s <a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor.data_flow_stats" title="async_graph_data_flow.AsyncExecutor.data_flow_stats"><code class="xref py py-attr docutils literal notranslate"><span class="pre">data_flow_stats</span></code></a>
+keeps track of data volumes and errors encountered at each node.
+<a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor.data_flow_stats" title="async_graph_data_flow.AsyncExecutor.data_flow_stats"><code class="xref py py-attr docutils literal notranslate"><span class="pre">data_flow_stats</span></code></a> is a dictionary
+where a key is the name of a node,
+and its value is itself a dict that maps <code class="docutils literal notranslate"><span class="pre">{&quot;in&quot;,</span> <span class="pre">&quot;out&quot;,</span> <span class="pre">&quot;err&quot;}</span></code>
+to the counts of data items coming into the node,
+going out of the node,
+and unhandled errors from the node, respectively.</p>
+<p>For a long-running graph execution,
+it is helpful to log such data flow information at a regular time interval.
+An <a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor" title="async_graph_data_flow.AsyncExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncExecutor</span></code></a> instance has
+the method <a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor.turn_on_data_flow_logging" title="async_graph_data_flow.AsyncExecutor.turn_on_data_flow_logging"><code class="xref py py-func docutils literal notranslate"><span class="pre">turn_on_data_flow_logging()</span></code></a>,
+which you can call to turn on and configure logging.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">async_graph_data_flow</span> <span class="kn">import</span> <span class="n">AsyncExecutor</span><span class="p">,</span> <span class="n">AsyncGraph</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">extract</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="s2">&quot;hello&quot;</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Transformer received: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># await asyncio.sleep(3)</span>
+    <span class="k">yield</span> <span class="nb">str</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data in Load: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">yield</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+    <span class="n">etl_graph</span> <span class="o">=</span> <span class="n">AsyncGraph</span><span class="p">()</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">extract</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;extract&quot;</span><span class="p">,</span> <span class="n">max_tasks</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">queue_size</span><span class="o">=</span><span class="mi">1_000</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">load</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;extract&quot;</span><span class="p">,</span> <span class="s2">&quot;transform&quot;</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;transform&quot;</span><span class="p">,</span> <span class="s2">&quot;load&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graph: </span><span class="si">{</span><span class="n">etl_graph</span><span class="o">.</span><span class="n">nodes_to_edges</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">etl_executor</span> <span class="o">=</span> <span class="n">AsyncExecutor</span><span class="p">(</span><span class="n">etl_graph</span><span class="p">)</span>
+
+<span class="hll">    <span class="n">etl_executor</span><span class="o">.</span><span class="n">turn_on_data_flow_logging</span><span class="p">(</span>
+</span><span class="hll">        <span class="n">time_interval</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">node_filter</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;transform&quot;</span><span class="p">,</span> <span class="s2">&quot;load&quot;</span><span class="p">]</span>
+</span><span class="hll">    <span class="p">)</span>
+</span>    <span class="n">etl_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+    <span class="c1"># Output:</span>
+    <span class="c1"># -------</span>
+    <span class="c1"># Graph: {&#39;extract&#39;: {&#39;transform&#39;}, &#39;transform&#39;: {&#39;load&#39;}, &#39;load&#39;: set()}</span>
+    <span class="c1"># Transformer received: hello</span>
+    <span class="c1"># Data in Load: Hello</span>
+    <span class="c1"># INFO:async_graph_data_flow.executor: transform - in=1, out=1, err=0</span>
+    <span class="c1"># INFO:async_graph_data_flow.executor: load - in=1, out=0, err=0</span>
+    <span class="c1"># INFO:async_graph_data_flow.executor: transform - in=2, out=2, err=0</span>
+    <span class="c1"># INFO:async_graph_data_flow.executor: load - in=2, out=1, err=0</span>
+    <span class="c1"># Transformer received: hello</span>
+    <span class="c1"># Data in Load: Hello</span>
+    <span class="c1"># Transformer received: hello</span>
+    <span class="c1"># Data in Load: Hello</span>
+    <span class="c1"># INFO:async_graph_data_flow.executor: transform - in=3, out=2, err=0</span>
+    <span class="c1"># INFO:async_graph_data_flow.executor: load - in=2, out=2, err=0</span>
+    <span class="c1"># INFO:async_graph_data_flow.executor: transform - in=3, out=3, err=0</span>
+    <span class="c1"># INFO:async_graph_data_flow.executor: load - in=3, out=3, err=0</span>
+</pre></div>
+</div>
+</section>
+<section id="concurrent-tasks-per-node">
+<h2>Concurrent Tasks Per Node<a class="headerlink" href="#concurrent-tasks-per-node" title="Permalink to this heading">#</a></h2>
+<p>By default, each node creates one task at a time.
+To spawn multiple, concurrent tasks from a node,
+set <code class="docutils literal notranslate"><span class="pre">max_tasks</span></code> at <a class="reference internal" href="api.html#async_graph_data_flow.AsyncGraph.add_node" title="async_graph_data_flow.AsyncGraph.add_node"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_node()</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">async_graph_data_flow</span> <span class="kn">import</span> <span class="n">AsyncExecutor</span><span class="p">,</span> <span class="n">AsyncGraph</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">node1</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">i</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">node2</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;node2 received </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">yield</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">max_tasks</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;max_tasks: </span><span class="si">{</span><span class="n">max_tasks</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">AsyncGraph</span><span class="p">()</span>
+        <span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node1</span><span class="p">)</span>
+        <span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
+            <span class="n">node2</span><span class="p">,</span>
+<span class="hll">            <span class="n">max_tasks</span><span class="o">=</span><span class="n">max_tasks</span><span class="p">,</span>
+</span>        <span class="p">)</span>
+        <span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;node1&quot;</span><span class="p">,</span> <span class="s2">&quot;node2&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graph: </span><span class="si">{</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes_to_edges</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">executor</span> <span class="o">=</span> <span class="n">AsyncExecutor</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">executor</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="n">t2</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;execution time: </span><span class="si">{</span><span class="n">t2</span> <span class="o">-</span> <span class="n">t1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+        <span class="c1"># Output:</span>
+        <span class="c1"># -------</span>
+        <span class="c1"># max_tasks: 1</span>
+        <span class="c1"># Graph: {&#39;node1&#39;: {&#39;node2&#39;}, &#39;node2&#39;: set()}</span>
+        <span class="c1"># node2 received 0</span>
+        <span class="c1"># node2 received 1</span>
+        <span class="c1"># node2 received 2</span>
+        <span class="c1"># node2 received 3</span>
+        <span class="c1"># node2 received 4</span>
+        <span class="c1"># execution time: 10.004492044448853</span>
+        <span class="c1">#</span>
+        <span class="c1"># max_tasks: 5</span>
+        <span class="c1"># Graph: {&#39;node1&#39;: {&#39;node2&#39;}, &#39;node2&#39;: set()}</span>
+        <span class="c1"># node2 received 0</span>
+        <span class="c1"># node2 received 1</span>
+        <span class="c1"># node2 received 2</span>
+        <span class="c1"># node2 received 3</span>
+        <span class="c1"># node2 received 4</span>
+        <span class="c1"># execution time: 2.001836061477661</span>
+</pre></div>
+</div>
+</section>
+<section id="halting-graph-execution-upon-exceptions">
+<h2>Halting Graph Execution upon Exceptions<a class="headerlink" href="#halting-graph-execution-upon-exceptions" title="Permalink to this heading">#</a></h2>
+<p>By default, an unhandled exception from any node does not halt the graph execution.
+This behavior can be altered in two different ways:</p>
+<ul class="simple">
+<li><p>To halt execution at any node, set <code class="docutils literal notranslate"><span class="pre">halt_on_exception</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code> when initializing an <a class="reference internal" href="api.html#async_graph_data_flow.AsyncGraph" title="async_graph_data_flow.AsyncGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncGraph</span></code></a> instance.</p></li>
+<li><p>To halt execution at a specific node, set <code class="docutils literal notranslate"><span class="pre">halt_on_exception</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code> when using <a class="reference internal" href="api.html#async_graph_data_flow.AsyncGraph.add_node" title="async_graph_data_flow.AsyncGraph.add_node"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_node()</span></code></a>  to add the node in question to the graph.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="kn">from</span> <span class="nn">async_graph_data_flow</span> <span class="kn">import</span> <span class="n">AsyncExecutor</span><span class="p">,</span> <span class="n">AsyncGraph</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">extract</span><span class="p">():</span>
+    <span class="k">yield</span> <span class="s2">&quot;hello&quot;</span>
+    <span class="k">yield</span> <span class="s2">&quot;world&quot;</span>
+    <span class="k">yield</span> <span class="s2">&quot;civis&quot;</span>
+    <span class="k">yield</span> <span class="s2">&quot;analytics&quot;</span>
+    <span class="k">yield</span> <span class="s2">&quot;done&quot;</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="c1"># print(f&quot;Transformer: {data}&quot;)</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="nb">str</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Load: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;World&quot;</span><span class="p">,</span> <span class="s2">&quot;Analytics&quot;</span><span class="p">]:</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;intentional error for </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">yield</span> <span class="n">data</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;output:&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="k">yield</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">etl_graph</span> <span class="o">=</span> <span class="n">AsyncGraph</span><span class="p">()</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">extract</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;extract&quot;</span><span class="p">,</span> <span class="n">max_tasks</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">queue_size</span><span class="o">=</span><span class="mi">1_000</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
+<span class="hll">    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">load</span><span class="p">,</span> <span class="n">halt_on_exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span>    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;extract&quot;</span><span class="p">,</span> <span class="s2">&quot;transform&quot;</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;transform&quot;</span><span class="p">,</span> <span class="s2">&quot;load&quot;</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;load&quot;</span><span class="p">,</span> <span class="s2">&quot;output&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graph: </span><span class="si">{</span><span class="n">etl_graph</span><span class="o">.</span><span class="n">nodes_to_edges</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">AsyncExecutor</span><span class="p">(</span><span class="n">etl_graph</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+    <span class="c1"># Output:</span>
+    <span class="c1"># -------</span>
+    <span class="c1"># Graph: {</span>
+    <span class="c1">#     &#39;extract&#39;: {&#39;transform&#39;},</span>
+    <span class="c1">#     &#39;transform&#39;: {&#39;load&#39;},</span>
+    <span class="c1">#     &#39;load&#39;: {&#39;output&#39;},</span>
+    <span class="c1">#     &#39;output&#39;: set(),</span>
+    <span class="c1"># }</span>
+    <span class="c1"># Load: Hello</span>
+    <span class="c1"># output: Hello</span>
+    <span class="c1"># Load: World</span>
+    <span class="c1"># Traceback (most recent call last):</span>
+    <span class="c1">#   File &quot;/path/to/src/async_graph_data_flow/executor.py&quot;, line 188, in _consumer</span>
+    <span class="c1">#     next_data_item = await anext(coro)</span>
+    <span class="c1">#   File &quot;/path/examples/halt_on_exception_at_a_specific_node.py&quot;, line 25, in load</span>
+    <span class="c1">#     raise Exception(f&quot;intentional error for {data}&quot;)</span>
+    <span class="c1"># Exception: intentional error for World</span>
+    <span class="c1">#</span>
+    <span class="c1"># Pipeline execution halted due to an exception in load node</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="kn">from</span> <span class="nn">async_graph_data_flow</span> <span class="kn">import</span> <span class="n">AsyncExecutor</span><span class="p">,</span> <span class="n">AsyncGraph</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">extract</span><span class="p">():</span>
+    <span class="k">yield</span> <span class="s2">&quot;hello&quot;</span>
+    <span class="k">yield</span> <span class="s2">&quot;world&quot;</span>
+    <span class="k">yield</span> <span class="s2">&quot;civis&quot;</span>
+    <span class="k">yield</span> <span class="s2">&quot;analytics&quot;</span>
+    <span class="k">yield</span> <span class="s2">&quot;done&quot;</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="c1"># print(f&quot;Transformer: {data}&quot;)</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="nb">str</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Load: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;World&quot;</span><span class="p">,</span> <span class="s2">&quot;Analytics&quot;</span><span class="p">]:</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;intentional error for </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">yield</span> <span class="n">data</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;output:&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="k">yield</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="hll">    <span class="n">etl_graph</span> <span class="o">=</span> <span class="n">AsyncGraph</span><span class="p">(</span><span class="n">halt_on_exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span>    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">extract</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;extract&quot;</span><span class="p">,</span> <span class="n">max_tasks</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">queue_size</span><span class="o">=</span><span class="mi">1_000</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">load</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;extract&quot;</span><span class="p">,</span> <span class="s2">&quot;transform&quot;</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;transform&quot;</span><span class="p">,</span> <span class="s2">&quot;load&quot;</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;load&quot;</span><span class="p">,</span> <span class="s2">&quot;output&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graph: </span><span class="si">{</span><span class="n">etl_graph</span><span class="o">.</span><span class="n">nodes_to_edges</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">AsyncExecutor</span><span class="p">(</span><span class="n">etl_graph</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+    <span class="c1"># Output:</span>
+    <span class="c1"># -------</span>
+    <span class="c1"># Graph: {</span>
+    <span class="c1">#     &#39;extract&#39;: {&#39;transform&#39;},</span>
+    <span class="c1">#     &#39;transform&#39;: {&#39;load&#39;},</span>
+    <span class="c1">#     &#39;load&#39;: {&#39;output&#39;},</span>
+    <span class="c1">#     &#39;output&#39;: set(),</span>
+    <span class="c1"># }</span>
+    <span class="c1"># Load: Hello</span>
+    <span class="c1"># output: Hello</span>
+    <span class="c1"># Load: World</span>
+    <span class="c1"># Traceback (most recent call last):</span>
+    <span class="c1">#   File &quot;/path/to/src/async_graph_data_flow/executor.py&quot;, line 188, in _consumer</span>
+    <span class="c1">#     next_data_item = await anext(coro)</span>
+    <span class="c1">#   File &quot;/path/to/examples/halt_on_exception_at_any_node.py&quot;, line 25, in load</span>
+    <span class="c1">#     raise Exception(f&quot;intentional error for {data}&quot;)</span>
+    <span class="c1"># Exception: intentional error for World</span>
+    <span class="c1">#</span>
+    <span class="c1"># Pipeline execution halted due to an exception in load node</span>
+</pre></div>
+</div>
+</section>
+<section id="incorporating-a-synchronous-function">
+<h2>Incorporating a Synchronous Function<a class="headerlink" href="#incorporating-a-synchronous-function" title="Permalink to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">async-graph-data-flow</span></code> is for asynchronous functions by design,
+but what if you need to run a <em>synchronous</em> function?
+Inside a node’s async function,
+you may grab the asyncio’s running loop,
+then call the synchronous function with this loop.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">async_graph_data_flow</span> <span class="kn">import</span> <span class="n">AsyncExecutor</span><span class="p">,</span> <span class="n">AsyncGraph</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">extract</span><span class="p">():</span>
+    <span class="k">yield</span> <span class="s2">&quot;hello&quot;</span>
+    <span class="k">yield</span> <span class="s2">&quot;world&quot;</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Transformer received: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="nb">str</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">load1</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data in Load1: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="sa">f</span><span class="s2">&quot;load1 </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">load2</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data in Load2: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="hll">    <span class="n">cloop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span>
+</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+<span class="hll">        <span class="k">await</span> <span class="n">cloop</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</span>        <span class="k">yield</span> <span class="sa">f</span><span class="s2">&quot;load2 </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;output:&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="k">yield</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">etl_graph</span> <span class="o">=</span> <span class="n">AsyncGraph</span><span class="p">()</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">extract</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;extract&quot;</span><span class="p">,</span> <span class="n">max_tasks</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">queue_size</span><span class="o">=</span><span class="mi">1_000</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">load1</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">load2</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;extract&quot;</span><span class="p">,</span> <span class="s2">&quot;transform&quot;</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;transform&quot;</span><span class="p">,</span> <span class="s2">&quot;load1&quot;</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;transform&quot;</span><span class="p">,</span> <span class="s2">&quot;load2&quot;</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;load1&quot;</span><span class="p">,</span> <span class="s2">&quot;output&quot;</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;load2&quot;</span><span class="p">,</span> <span class="s2">&quot;output&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graph: </span><span class="si">{</span><span class="n">etl_graph</span><span class="o">.</span><span class="n">nodes_to_edges</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">AsyncExecutor</span><span class="p">(</span><span class="n">etl_graph</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+    <span class="c1"># Output:</span>
+    <span class="c1"># -------</span>
+    <span class="c1"># Graph: {</span>
+    <span class="c1">#     &#39;extract&#39;: {&#39;transform&#39;},</span>
+    <span class="c1">#     &#39;transform&#39;: {&#39;load1&#39;, &#39;load2&#39;},</span>
+    <span class="c1">#     &#39;load1&#39;: {&#39;output&#39;},</span>
+    <span class="c1">#     &#39;load2&#39;: {&#39;output&#39;},</span>
+    <span class="c1">#     &#39;output&#39;: set(),</span>
+    <span class="c1"># }</span>
+    <span class="c1"># Transformer received: hello</span>
+    <span class="c1"># Transformer received: world</span>
+    <span class="c1"># Data in Load1: Hello</span>
+    <span class="c1"># Data in Load2: Hello</span>
+    <span class="c1"># output: load1 0</span>
+    <span class="c1"># output: load2 0</span>
+    <span class="c1"># output: load1 1</span>
+    <span class="c1"># output: load2 1</span>
+    <span class="c1"># Data in Load1: World</span>
+    <span class="c1"># output: load1 2</span>
+    <span class="c1"># Data in Load2: World</span>
+    <span class="c1"># output: load2 2</span>
+    <span class="c1"># output: load1 0</span>
+    <span class="c1"># output: load2 0</span>
+    <span class="c1"># output: load1 1</span>
+    <span class="c1"># output: load2 1</span>
+    <span class="c1"># output: load1 2</span>
+    <span class="c1"># output: load2 2</span>
+</pre></div>
+</div>
+</section>
+<section id="shared-state-across-asynchronous-functions">
+<h2>Shared State Across Asynchronous Functions<a class="headerlink" href="#shared-state-across-asynchronous-functions" title="Permalink to this heading">#</a></h2>
+<p>Sharing state across the async functions is possible
+if you pass the same object around them.
+Such an object can be a custom class instance with methods and attributes as needed.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="kn">from</span> <span class="nn">async_graph_data_flow</span> <span class="kn">import</span> <span class="n">AsyncExecutor</span><span class="p">,</span> <span class="n">AsyncGraph</span>
+
+
+<span class="k">class</span> <span class="nc">SharedState</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.001</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+
+<span class="hll"><span class="k">async</span> <span class="k">def</span> <span class="nf">node1</span><span class="p">(</span><span class="n">shared_state</span><span class="p">):</span>
+</span>    <span class="k">await</span> <span class="n">shared_state</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;current_data&quot;</span><span class="p">,</span> <span class="s2">&quot;hello&quot;</span><span class="p">)</span>
+<span class="hll">    <span class="k">yield</span> <span class="n">shared_state</span>
+</span>    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">shared_state</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;current_data&quot;</span><span class="p">,</span> <span class="s2">&quot;world&quot;</span><span class="p">)</span>
+<span class="hll">    <span class="k">yield</span> <span class="n">shared_state</span>
+</span>
+
+<span class="hll"><span class="k">async</span> <span class="k">def</span> <span class="nf">node2</span><span class="p">(</span><span class="n">shared_state</span><span class="p">):</span>
+</span>    <span class="n">current_data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">shared_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;current_data&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;node2 received: </span><span class="si">{</span><span class="n">current_data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="hll">    <span class="k">yield</span> <span class="n">shared_state</span><span class="p">,</span> <span class="n">current_data</span>
+</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">etl_graph</span> <span class="o">=</span> <span class="n">AsyncGraph</span><span class="p">()</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node1</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node2</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;node1&quot;</span><span class="p">,</span> <span class="s2">&quot;node2&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graph: </span><span class="si">{</span><span class="n">etl_graph</span><span class="o">.</span><span class="n">nodes_to_edges</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="hll">    <span class="n">shared_state</span> <span class="o">=</span> <span class="n">SharedState</span><span class="p">()</span>
+</span><span class="hll">    <span class="n">AsyncExecutor</span><span class="p">(</span><span class="n">etl_graph</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">start_nodes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;node1&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">shared_state</span><span class="p">,)})</span>
+</span>
+    <span class="c1"># Output:</span>
+    <span class="c1"># -------</span>
+    <span class="c1"># Graph: {&#39;node1&#39;: {&#39;node2&#39;}, &#39;node2&#39;: set()}</span>
+    <span class="c1"># node2 received: hello</span>
+    <span class="c1"># node2 received: world</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="api.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">API Reference</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="quickstart.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Quickstart</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, Civis Analytics. Documentation last updated on 2022-12-22.
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">More Examples</a><ul>
+<li><a class="reference internal" href="#customizable-start-nodes">Customizable Start Nodes</a></li>
+<li><a class="reference internal" href="#data-flow-statistics-and-logging">Data Flow Statistics and Logging</a></li>
+<li><a class="reference internal" href="#concurrent-tasks-per-node">Concurrent Tasks Per Node</a></li>
+<li><a class="reference internal" href="#halting-graph-execution-upon-exceptions">Halting Graph Execution upon Exceptions</a></li>
+<li><a class="reference internal" href="#incorporating-a-synchronous-function">Incorporating a Synchronous Function</a></li>
+<li><a class="reference internal" href="#shared-state-across-asynchronous-functions">Shared State Across Asynchronous Functions</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/scripts/furo.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    </body>
+</html>
