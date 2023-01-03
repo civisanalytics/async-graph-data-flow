@@ -1,26 +1,114 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+orbs:
+  win: circleci/windows@5.0
+
 jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+  pre-build:
+    description: A check that needs to be done on only one supported Python version
+    parameters:
+      command-run:
+        type: string
     docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+      # Pick the highest Python 3.x version that this package is known to support
+      - image: cimg/python:3.11
     steps:
       - checkout
       - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
+          command: << parameters.command-run >>
 
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+  build-python:
+    parameters:
+      python-version:
+        type: string
+    docker:
+      - image: cimg/python:<< parameters.python-version >>
+    resource_class: medium+
+    steps:
+      - checkout
+      - run:
+          # Test that we can build a source distribution that can correctly
+          # install from clean slate.
+          # "python -m build" creates
+          # dist/<pkg-name>-x.y.z.tar.gz and dist/<pkg-name>-x.y.z-py3-none-any.whl
+          name: Build source distribution and install package from it
+          command: |
+              pip install ".[dev]" && \
+              python -m build && \
+              pip install dist/`ls dist/ | grep .whl`
+      - run:
+          name: Show installed Python packages
+          command: pip list -v
+      - run:
+          name: Run python tests
+          command: |
+              pytest --junitxml=/tmp/testxml/report1.xml
+      - store_test_results:
+          path: /tmp/testxml/
+
+  build-python-win:
+    executor:
+      name: win/default
+      shell: powershell.exe
+    steps:
+      - checkout
+      - run: systeminfo
+      - run:
+          name: Run tests on Windows
+          shell: bash.exe
+          command: |
+            python --version && \
+            pip install ".[dev]" && \
+            pip list && \
+            pytest
 workflows:
-  say-hello-workflow:
+  version: 2
+  build-and-test:
     jobs:
-      - say-hello
+      - pre-build:
+          name: flake8
+          command-run: |
+            pip install ".[dev]" && \
+            flake8 src tests examples
+      - pre-build:
+          name: black
+          command-run:  |
+            pip install ".[dev]" && \
+            black --check src tests examples
+      - pre-build:
+          name: twine
+          command-run: |
+            pip install ".[dev]" && \
+            python -m build && \
+            twine check dist/`ls dist/ | grep .tar.gz` && \
+            twine check dist/`ls dist/ | grep .whl`
+      - pre-build:
+          name: safety
+          command-run: |
+            pip install -e . && \
+            pip install --upgrade safety && \
+            safety --version && \
+            pip freeze | safety check --stdin
+      - pre-build:
+          name: bandit
+          command-run: |
+            pip install --upgrade bandit && \
+            bandit --version && \
+            bandit -r src -x tests
+      - build-python:
+          requires:
+            - flake8
+            - black
+            - twine
+            - safety
+            - bandit
+          matrix:
+            parameters:
+              python-version: ["3.10", "3.11"]
+      - build-python-win:
+          requires:
+            - flake8
+            - black
+            - twine
+            - safety
+            - bandit
