@@ -1,0 +1,8 @@
+.env
+.vscode/
+*.log
+**/__pycache__/
+.pytest_cache/
+.python-version
+.venv
+**/async_graph_data_flow.egg-info
