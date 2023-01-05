@@ -50,6 +50,12 @@ Choose whether to halt execution at a specific node or any node.
 
 The source code is only about 400 lines!
 
+* **Single-machine Usage** 💻
+
+We love Big Data™ and distributed computing,
+though deep down we all know that practically we accomplish a ton of work on single machines
+without those big guns.
+
 * **Pure Python** 🐍
 
 The library is built on top of ``asyncio`` from the Python standard library, with no third-party dependencies.
