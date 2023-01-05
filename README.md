@@ -41,7 +41,7 @@ After the manual updates under `docs/source/` are ready,
 the HTML pages are updated as follows:
 
 ```bash
-rm -r docs/.doctrees docs/_sources docs/_static && rm docs/*.html
+rm -r docs/_sources docs/_static && rm docs/*.html
 
 # Run the following command *twice* -- certain HTML updates only show up after multiple `sphinx-build` runs.
 sphinx-build docs/source docs
