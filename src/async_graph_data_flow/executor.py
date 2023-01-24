@@ -4,6 +4,7 @@ import logging
 import time
 import traceback
 from typing import Any, Iterable, Optional
+import abc
 
 from .graph import AsyncGraph, InvalidAsyncGraphError
 
@@ -13,6 +14,41 @@ _LOG = logging.getLogger(__name__)
 _DEFAULT_DATA_FLOW_LOGGING_NODE_FORMAT = " {node} - in={in}, out={out}, err={err}"
 _DEFAULT_DATA_FLOW_LOGGING_TIME_INTERVAL = 60  # in seconds
 
+
+class AsyncQueueManager(abc.ABC):
+    @abc.abstractmethod
+    async def __init__(self, *args, **kwargs):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def put(self, node, value):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def get(self, node, value):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def shutdown(self):
+        raise NotImplementedError
+
+
+class AsyncQueueManagerDefault(AsyncQueueManager):
+    async def __init__(self, graph: AsyncGraph):
+        self._node_queues = {}
+
+        for node_name, node in graph._nodes.items():
+            queue = asyncio.Queue(maxsize=node.queue_size)
+            self._node_queues[node_name] = queue
+            
+    async def put(self, node, value):
+        pass
+
+    async def put(self, node, value):
+        pass
+
+    async def shutdown(self):
+        pass
 
 class AsyncExecutor:
     def __init__(self, graph: AsyncGraph, logger: logging.Logger = None):
