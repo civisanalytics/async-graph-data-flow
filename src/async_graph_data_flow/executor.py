@@ -17,15 +17,15 @@ _DEFAULT_DATA_FLOW_LOGGING_TIME_INTERVAL = 60  # in seconds
 
 class AsyncQueueManager(abc.ABC):
     @abc.abstractmethod
-    async def __init__(self, *args, **kwargs):
+    async def __init__(self, graph: AsyncGraph):
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def put(self, node, value):
+    async def put(self, node_name, value):
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def get(self, node, value):
+    async def get(self, node_name):
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -33,25 +33,39 @@ class AsyncQueueManager(abc.ABC):
         raise NotImplementedError
 
 
-class AsyncQueueManagerDefault(AsyncQueueManager):
-    async def __init__(self, graph: AsyncGraph):
+class SimpleAsyncQueueManager(AsyncQueueManager):
+    def __init__(self, graph: AsyncGraph):
         self._node_queues = {}
 
         for node_name, node in graph._nodes.items():
             queue = asyncio.Queue(maxsize=node.queue_size)
             self._node_queues[node_name] = queue
-            
-    async def put(self, node, value):
-        pass
 
-    async def put(self, node, value):
-        pass
+    async def put(self, node_name, value):
+        node_queue = self._node_queues[node_name]
+        await node_queue.put(value)
+
+    async def get(self, node_name):
+        node_queue = self._node_queues[node_name]
+        data = await node_queue.get()
+        return data
+
+    async def done(self, node_name):
+        node_queue = self._node_queues[node_name]
+        node_queue.task_done()
 
     async def shutdown(self):
-        pass
+        for node_queue in self._node_queues.values():
+            await node_queue.join()
+
 
 class AsyncExecutor:
-    def __init__(self, graph: AsyncGraph, logger: logging.Logger = None):
+    def __init__(
+        self,
+        graph: AsyncGraph,
+        logger: logging.Logger = None,
+        queue_manager_class: AsyncQueueManager = SimpleAsyncQueueManager,
+    ):
         """Initialize an executor.
 
         Parameters
@@ -60,12 +74,12 @@ class AsyncExecutor:
         logger : logging.Logger, optional
             Provide a logger for any customization.
             If not provided, a generic ``logging.getLogger(__name__)`` is used.
+        queue_manager_class : AsyncQueueManager
         """
         self._graph = graph
         if not isinstance(self._graph, AsyncGraph):
             raise TypeError(f"{self._graph} must be an AsyncGraph instance")
 
-        self._node_queues = {}
         self._consumer_tasks = {}
         self._halt_pipeline_execution = False
         self._logger = logger if logger else _LOG
@@ -79,6 +93,7 @@ class AsyncExecutor:
         self._data_flow_logging_last_timestamp = 0
 
         self._start_node_args = None
+        self._queue_manager_class = queue_manager_class
 
     @property
     def graph(self) -> AsyncGraph:
@@ -162,14 +177,12 @@ class AsyncExecutor:
 
     async def _add_to_node_queue(self, edges: set[str], item: Any):
         for edge in edges:
-            edge_queue = self._node_queues[edge]
-            await edge_queue.put(item)
+            await self._queue_manager.put(node_name=edge, value=item)
 
     async def _producer(self):
         """Push args to start nodes' queue in graph to begin pipeline."""
         for node, args in self._start_node_args.items():
-            queue = self._node_queues[node]
-            await queue.put(args)
+            await self._queue_manager.put(node_name=node, value=args)
 
     async def _consumer(self, node_name: str):
         """Consume and process data within the graph pipeline."""
@@ -185,11 +198,10 @@ class AsyncExecutor:
                             await self._log_data_flow_nodes()
                             self._data_flow_logging_last_timestamp = current_timestamp
 
-                queue = self._node_queues[node_name]
-                data = await queue.get()
+                data = await self._queue_manager.get(node_name=node_name)
 
                 if self._halt_pipeline_execution:
-                    queue.task_done()
+                    await self._queue_manager.done(node_name=node_name)
                     continue
 
                 node = self._graph._nodes[node_name]
@@ -215,7 +227,7 @@ class AsyncExecutor:
                             f"in {node_name} node"
                         )
                         self._halt_pipeline_execution = True
-                        queue.task_done()
+                        await self._queue_manager.done(node_name=node_name)
                     continue
 
                 while True:
@@ -252,7 +264,7 @@ class AsyncExecutor:
                         await self._update_data_flow_in_out_stats(node_name, node_edges)
                         await self._add_to_node_queue(node_edges, next_data_item)
 
-                queue.task_done()
+                await self._queue_manager.done(node_name=node_name)
             except asyncio.CancelledError:
                 break
 
@@ -265,9 +277,9 @@ class AsyncExecutor:
         self._data_flow_stats[node]["err"] += 1
 
     async def _pipeline_execution(self):
+        self._queue_manager = self._queue_manager_class(self._graph)
+
         for node_name, node in self._graph._nodes.items():
-            queue = asyncio.Queue(maxsize=node.queue_size)
-            self._node_queues[node_name] = queue
             self._data_flow_stats[node_name] = {"in": 0, "out": 0, "err": 0}
 
             for i in range(node.max_tasks):
@@ -276,9 +288,7 @@ class AsyncExecutor:
                 self._consumer_tasks[task_id] = task
 
         await self._producer()
-
-        for queue in self._node_queues.values():
-            await queue.join()
+        await self._queue_manager.shutdown()
 
         for task in self._consumer_tasks.values():
             task.cancel()
