@@ -7,7 +7,7 @@ name = "async-graph-data-flow"
 version = "1.0.0"
 description = "Asynchronous functions that pass data along a directed acyclic graph"
 readme = "README.md"
-requires-python = ">= 3.10.*"
+requires-python = ">= 3.10"
 license = { text = "BSD 3-Clause" }
 authors = [ { name = "Civis Analytics", email = "opensource@civisanalytics.com" } ]
 keywords = [
@@ -50,7 +50,7 @@ dev = [
     "furo == 2022.9.29",
     "numpydoc == 1.5.0",
     "sphinx-copybutton == 0.5.1",
-    "sphinxcontrib-mermaid == 0.7.1",
+    "sphinxcontrib-mermaid == 0.8",
 ]
 
 [tool.setuptools.packages.find]
