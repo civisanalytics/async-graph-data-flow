@@ -41,6 +41,9 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 html_theme = 'furo'
 html_static_path = ['_static']
 
+# Pinning mermaid version due to https://github.com/mgaitan/sphinxcontrib-mermaid/issues/110
+mermaid_version = "9.4.0"
+
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None)
 }
