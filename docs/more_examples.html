@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="API Reference" href="api.html" /><link rel="prev" title="Quickstart" href="quickstart.html" />
 
-    <meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
+    <!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07 -->
         <title>More Examples - async-graph-data-flow documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     
@@ -150,7 +150,7 @@
   <span class="sidebar-brand-text">async-graph-data-flow  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -446,7 +446,7 @@ set <code class="docutils literal notranslate"><span class="pre">max_tasks</span
 </div>
 </section>
 <section id="halting-graph-execution-upon-exceptions">
-<h2>Halting Graph Execution upon Exceptions<a class="headerlink" href="#halting-graph-execution-upon-exceptions" title="Permalink to this heading">#</a></h2>
+<span id="id2"></span><h2>Halting Graph Execution upon Exceptions<a class="headerlink" href="#halting-graph-execution-upon-exceptions" title="Permalink to this heading">#</a></h2>
 <p>By default, an unhandled exception from any node does not halt the graph execution.
 This behavior can be altered in two different ways:</p>
 <ul class="simple">
@@ -587,6 +587,59 @@ This behavior can be altered in two different ways:</p>
     <span class="c1"># Exception: intentional error for World</span>
     <span class="c1">#</span>
     <span class="c1"># Pipeline execution halted due to an exception in load node</span>
+</pre></div>
+</div>
+</section>
+<section id="accessing-and-raising-an-exception">
+<h2>Accessing and Raising an Exception<a class="headerlink" href="#accessing-and-raising-an-exception" title="Permalink to this heading">#</a></h2>
+<p>While it’s possible to halt the graph execution due to unhandled exceptions
+(see <a class="reference internal" href="#halting-graph-execution-upon-exceptions">Halting Graph Execution upon Exceptions</a>),
+these exceptions are not raised from within the <a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor.execute" title="async_graph_data_flow.AsyncExecutor.execute"><code class="xref py py-func docutils literal notranslate"><span class="pre">execute()</span></code></a> call.
+Instead, <a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor" title="async_graph_data_flow.AsyncExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncExecutor</span></code></a>’s <a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor.exceptions" title="async_graph_data_flow.AsyncExecutor.exceptions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">exceptions</span></code></a>
+allows access to the exceptions from the nodes,
+and you can determine what to do with this information
+(e.g., raise an exception on your own).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">async_graph_data_flow</span> <span class="kn">import</span> <span class="n">AsyncExecutor</span><span class="p">,</span> <span class="n">AsyncGraph</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">node1</span><span class="p">():</span>
+    <span class="k">yield</span> <span class="s2">&quot;hello&quot;</span>
+    <span class="k">yield</span> <span class="s2">&quot;world&quot;</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">node2</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;bad data: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">yield</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">etl_graph</span> <span class="o">=</span> <span class="n">AsyncGraph</span><span class="p">()</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node1</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node2</span><span class="p">)</span>
+    <span class="n">etl_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;node1&quot;</span><span class="p">,</span> <span class="s2">&quot;node2&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graph: </span><span class="si">{</span><span class="n">etl_graph</span><span class="o">.</span><span class="n">nodes_to_edges</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">executor</span> <span class="o">=</span> <span class="n">AsyncExecutor</span><span class="p">(</span><span class="n">etl_graph</span><span class="p">)</span>
+    <span class="n">executor</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+<span class="hll">    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">excs</span> <span class="o">:=</span> <span class="n">executor</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+</span><span class="hll">        <span class="k">for</span> <span class="n">exc</span> <span class="ow">in</span> <span class="n">excs</span><span class="p">:</span>
+</span><span class="hll">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exceptions: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span class="hll">        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;oh no! something went wrong in the graph execution&quot;</span><span class="p">)</span>
+</span>
+    <span class="c1"># Output:</span>
+    <span class="c1"># -------</span>
+    <span class="c1"># Graph: {&#39;node1&#39;: {&#39;node2&#39;}, &#39;node2&#39;: set()}</span>
+    <span class="c1">#</span>
+    <span class="c1"># ... (logging for the unhandled exceptions from the nodes,</span>
+    <span class="c1">#      without actually raising the exceptions)</span>
+    <span class="c1">#</span>
+    <span class="c1"># Exceptions: []</span>
+    <span class="c1"># Exceptions: [ValueError(&#39;bad data: hello&#39;), ValueError(&#39;bad data: world&#39;)]</span>
+    <span class="c1"># Traceback (most recent call last):</span>
+    <span class="c1"># File &quot;/path/to/examples/raising_an_exception.py&quot;, line 28, in &lt;module&gt;</span>
+    <span class="c1">#     raise RuntimeError(&quot;oh no! something went wrong in the graph execution&quot;)</span>
+    <span class="c1"># RuntimeError: oh no! something went wrong in the graph execution</span>
 </pre></div>
 </div>
 </section>
@@ -770,7 +823,7 @@ Such an object can be a custom class instance with methods and attributes as nee
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2022 - 2023, Civis Analytics. Documentation last updated on 2023-02-24.
+                Copyright &#169; 2022 - 2023, Civis Analytics. Documentation last updated on 2023-03-02.
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -778,9 +831,7 @@ Such an object can be a custom class instance with methods and attributes as nee
             
           </div>
           <div class="right-details">
-            <div class="icons">
-              
-            </div>
+            
           </div>
         </div>
         
@@ -803,6 +854,7 @@ Such an object can be a custom class instance with methods and attributes as nee
 <li><a class="reference internal" href="#data-flow-statistics-and-logging">Data Flow Statistics and Logging</a></li>
 <li><a class="reference internal" href="#concurrent-tasks-per-node">Concurrent Tasks Per Node</a></li>
 <li><a class="reference internal" href="#halting-graph-execution-upon-exceptions">Halting Graph Execution upon Exceptions</a></li>
+<li><a class="reference internal" href="#accessing-and-raising-an-exception">Accessing and Raising an Exception</a></li>
 <li><a class="reference internal" href="#incorporating-a-synchronous-function">Incorporating a Synchronous Function</a></li>
 <li><a class="reference internal" href="#shared-state-across-asynchronous-functions">Shared State Across Asynchronous Functions</a></li>
 </ul>
@@ -817,9 +869,6 @@ Such an object can be a custom class instance with methods and attributes as nee
     </aside>
   </div>
 </div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/scripts/furo.js"></script>
