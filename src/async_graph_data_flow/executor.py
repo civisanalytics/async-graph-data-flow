@@ -33,6 +33,8 @@ class AsyncExecutor:
             If not provided, a generic ``logging.getLogger(__name__)`` is used.
         max_exceptions : int, optional
             The maximum number of unhandled exceptions to keep track of at each node.
+            If the number of exceptions at a node exceeds this threshold,
+            only the most recent exceptions are kept.
             See also :attr:`~async_graph_data_flow.AsyncExecutor.exceptions`.
         """
         self._graph = graph
