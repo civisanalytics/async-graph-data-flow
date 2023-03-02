@@ -11,7 +11,6 @@ async def node2(data):
     yield
 
 
-
 if __name__ == "__main__":
     etl_graph = AsyncGraph()
     etl_graph.add_node(node1)
