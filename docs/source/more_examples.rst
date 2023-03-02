@@ -94,6 +94,7 @@ and you can determine what to do with this information (e.g., raise an exception
 
 .. literalinclude:: ../../examples/raising_an_exceptioin.py
    :language: python
+   :emphasize-lines: 36-38
 
 Incorporating a Synchronous Function
 ------------------------------------

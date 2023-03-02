@@ -208,8 +208,9 @@ class AsyncExecutor:
                         break
                     except asyncio.CancelledError:
                         break
-                    except BaseException:
+                    except Exception as exc:
                         await self._update_data_flow_error_stats(node_name)
+                        await self._update_exceptions(node_name, exc)
                         self._logger.error(traceback.format_exc())
                         if self._graph.halt_on_exception or node.halt_on_exception:
                             # close current agen

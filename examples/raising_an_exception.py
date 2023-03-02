@@ -22,12 +22,9 @@ if __name__ == "__main__":
     executor = AsyncExecutor(etl_graph)
     executor.execute()
 
-    print(executor.data_flow_stats)
-    print(executor.exceptions)
-
     if any(excs := executor.exceptions.values()):
-        for i, exc in enumerate(excs, 1):
-            print(f"Exception #{i}: {exc}")
+        for exc in excs:
+            print(f"Exceptions: {exc}")
         raise RuntimeError("oh no! something went wrong in the graph execution")
 
     # Output:
@@ -37,10 +34,9 @@ if __name__ == "__main__":
     # ... (logging for the unhandled exceptions from the nodes,
     #      without actually raising the exceptions)
     #
-    # Exception #1
-    # ValueError: bad data: hello
-    # Exception #2
-    # ValueError: bad data: world
+    # Exceptions: []
+    # Exceptions: [ValueError('bad data: hello'), ValueError('bad data: world')]
     # Traceback (most recent call last):
-    #   ...
+    # File "/path/to/examples/raising_an_exception.py", line 28, in <module>
+    #     raise RuntimeError("oh no! something went wrong in the graph execution")
     # RuntimeError: oh no! something went wrong in the graph execution
