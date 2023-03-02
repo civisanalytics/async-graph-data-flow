@@ -21,6 +21,14 @@ class _Node(NamedTuple):
 
 class AsyncGraph:
     def __init__(self, halt_on_exception: bool = False) -> None:
+        """Initialize a graph.
+
+        Parameters
+        ----------
+        halt_on_exception : bool, optional
+            To halt graph execution when *any* node has an unhandled exception,
+            set this argument to ``True``. Defaults to ``False``.
+        """
         self.halt_on_exception = halt_on_exception
         self._nodes: dict[str, _Node] = {}
         self._nodes_to_edges: OrderedDict[str, set[str]] = OrderedDict()
@@ -46,8 +54,8 @@ class AsyncGraph:
             The name of this node. If not provided, the ``__name__`` attribute
             ``func`` is used.
         halt_on_exception : bool, optional
-            To halt graph execution when *any* node has an unhandled exception,
-            set ``halt_on_exception`` to ``True``. Defaults to ``False``.
+            To halt graph execution when this node has an unhandled exception,
+            set this argument to ``True``. Defaults to ``False``.
         unpack_input : bool, optional
             By default (i.e., ``unpack_input`` is ``True``),
             ``func`` with arguments yielded from a source node is called as

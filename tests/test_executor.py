@@ -414,3 +414,38 @@ def test_yielding_a_tuple_but_not_enough_values():
     assert etl_executor.data_flow_stats["node2"].get("in") == 2
     assert etl_executor.data_flow_stats["node2"].get("out") == 0
     assert etl_executor.data_flow_stats["node2"].get("err") == 1
+
+
+def test_exceptions():
+    async def node1():
+        yield "hello"
+        yield "world"
+
+    async def node2(data):
+        raise ValueError(f"bad data: {data}")
+        yield
+
+    graph = AsyncGraph()
+    graph.add_node(node1)
+    graph.add_node(node2)
+    graph.add_edge("node1", "node2")
+
+    executor = AsyncExecutor(graph)
+    executor.execute()
+    excs = executor.exceptions
+
+    assert excs["node1"] == []
+    assert len(excs["node2"]) == 2
+
+    actual_exc_msgs = [e.args[0] for e in excs["node2"]]
+    expected_exc_msgs = ["bad data: hello", "bad data: world"]
+    assert actual_exc_msgs == expected_exc_msgs
+    assert all(type(e) == ValueError for e in excs["node2"])
+
+    assert executor.data_flow_stats["node1"].get("in") == 0
+    assert executor.data_flow_stats["node1"].get("out") == 2
+    assert executor.data_flow_stats["node1"].get("err") == 0
+
+    assert executor.data_flow_stats["node2"].get("in") == 2
+    assert executor.data_flow_stats["node2"].get("out") == 0
+    assert executor.data_flow_stats["node2"].get("err") == 2
