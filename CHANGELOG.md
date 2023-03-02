@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Security
 
 
-## [1.1.0] - 2023-03-06
+## [1.1.0] - 2023-03-02
 
 ### Added
 - Keep track of and expose exceptions. (#6)
