@@ -63,6 +63,8 @@ set ``max_tasks`` at :func:`~async_graph_data_flow.AsyncGraph.add_node`.
    :language: python
    :emphasize-lines: 25
 
+.. _halting_graph_execution_upon_exceptions:
+
 Halting Graph Execution upon Exceptions
 ---------------------------------------
 
@@ -79,6 +81,19 @@ This behavior can be altered in two different ways:
 .. literalinclude:: ../../examples/halt_on_exception_at_any_node.py
    :language: python
    :emphasize-lines: 36
+
+Accessing and Raising an Exception
+----------------------------------
+
+While it's possible to halt the graph execution due to unhandled exceptions
+(see `halting_graph_execution_upon_exceptions`_),
+these exceptions are not raised from within the :func:`~async_graph_data_flow.AsyncExecutor.execute` call.
+Instead, :attr:`~async_graph_data_flow.AsyncExecutor.exceptions` allows access
+to the exceptions raised from the nodes,
+and you can determine what to do with this information (e.g., raise an exception).
+
+.. literalinclude:: ../../examples/raising_an_exceptioin.py
+   :language: python
 
 Incorporating a Synchronous Function
 ------------------------------------
