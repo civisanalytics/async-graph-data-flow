@@ -19,6 +19,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Security
 
+## [1.2.0] - 2023-04-25
+
+### Added
+- An `AsyncExecutor` instance now has the `start_nodes` property.
+  It maps start nodes to their arguments passed in at the beginning of graph execution. 
+
+### Fixed
+- Before a graph executes, the `exceptions` property of an `AsyncExecutor` instance 
+  now returns `None`. Previously, accessing this property before graph execute
+  would raise an exception.
 
 ## [1.1.0] - 2023-03-02
 
