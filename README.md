@@ -8,6 +8,10 @@
 
 Please visit https://civisanalytics.github.io/async-graph-data-flow
 
+Please also check out this
+[blog post](https://www.civisanalytics.com/blog/open-source-software-release-introducing-async-graph-data-flow-a-python-library-for-efficient-data-pipelines/)
+introducing this package.
+
 ## License
 
 BSD 3-Clause License. Please see `LICENSE.txt` in the GitHub source code for details.
