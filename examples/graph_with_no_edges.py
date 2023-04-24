@@ -36,7 +36,7 @@ if __name__ == "__main__":
     executor.execute()
     t2 = time.time()
     print("execution time:", t2 - t1)
-    print(f"start nodes:", executor.start_nodes)
+    print("start nodes:", executor.start_nodes)
 
     # Output:
     # -------
