@@ -306,6 +306,66 @@ to select which nodes to execute instead and/or supply the arguments to whicheve
 </pre></div>
 </div>
 </section>
+<section id="graph-with-nodes-only-and-no-edges">
+<h2>Graph with Nodes only and No Edges<a class="headerlink" href="#graph-with-nodes-only-and-no-edges" title="Permalink to this heading">#</a></h2>
+<p>It is possible to execute a graph with nodes only and no edges.
+In this case,
+if <code class="docutils literal notranslate"><span class="pre">start_nodes</span></code> at <a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor.execute" title="async_graph_data_flow.AsyncExecutor.execute"><code class="xref py py-func docutils literal notranslate"><span class="pre">execute()</span></code></a> are not specified (see above),
+then <em>all</em> nodes are start nodes (because all nodes don’t have an incoming edge),
+and therefore all nodes will execute concurrently upon graph execution.
+The start nodes and their arguments at the beginning of the graph execution are available at
+<a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor.start_nodes" title="async_graph_data_flow.AsyncExecutor.start_nodes"><code class="xref py py-attr docutils literal notranslate"><span class="pre">start_nodes</span></code></a> of <a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor.execute" title="async_graph_data_flow.AsyncExecutor.execute"><code class="xref py py-func docutils literal notranslate"><span class="pre">execute()</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">async_graph_data_flow</span> <span class="kn">import</span> <span class="n">AsyncExecutor</span><span class="p">,</span> <span class="n">AsyncGraph</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">node1</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;from node1&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">yield</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">node2</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;from node2&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">yield</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">node3</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;from node3&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">yield</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">AsyncGraph</span><span class="p">()</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node1</span><span class="p">)</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node2</span><span class="p">)</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node3</span><span class="p">)</span>
+<span class="hll">    <span class="c1"># Nodes are added, but there are no edges.</span>
+</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graph: </span><span class="si">{</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes_to_edges</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">executor</span> <span class="o">=</span> <span class="n">AsyncExecutor</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+
+    <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">executor</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+    <span class="n">t2</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;execution time:&quot;</span><span class="p">,</span> <span class="n">t2</span> <span class="o">-</span> <span class="n">t1</span><span class="p">)</span>
+<span class="hll">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;start nodes:&quot;</span><span class="p">,</span> <span class="n">executor</span><span class="o">.</span><span class="n">start_nodes</span><span class="p">)</span>
+</span>
+    <span class="c1"># Output:</span>
+    <span class="c1"># -------</span>
+    <span class="c1"># Graph: {&#39;node1&#39;: set(), &#39;node2&#39;: set(), &#39;node3&#39;: set()}</span>
+    <span class="c1"># from node1</span>
+    <span class="c1"># from node2</span>
+    <span class="c1"># from node3</span>
+    <span class="c1"># execution time: 2.0039637088775635</span>
+<span class="hll">    <span class="c1"># start nodes: {&#39;node3&#39;: (), &#39;node1&#39;: (), &#39;node2&#39;: ()}</span>
+</span></pre></div>
+</div>
+</section>
 <section id="data-flow-statistics-and-logging">
 <h2>Data Flow Statistics and Logging<a class="headerlink" href="#data-flow-statistics-and-logging" title="Permalink to this heading">#</a></h2>
 <p><a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor" title="async_graph_data_flow.AsyncExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncExecutor</span></code></a>’s <a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor.data_flow_stats" title="async_graph_data_flow.AsyncExecutor.data_flow_stats"><code class="xref py py-attr docutils literal notranslate"><span class="pre">data_flow_stats</span></code></a>
@@ -823,7 +883,7 @@ Such an object can be a custom class instance with methods and attributes as nee
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2022 - 2023, Civis Analytics. Documentation last updated on 2023-03-02.
+                Copyright &#169; 2022 - 2023, Civis Analytics. Documentation last updated on 2023-04-24.
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -851,6 +911,7 @@ Such an object can be a custom class instance with methods and attributes as nee
             <ul>
 <li><a class="reference internal" href="#">More Examples</a><ul>
 <li><a class="reference internal" href="#customizable-start-nodes">Customizable Start Nodes</a></li>
+<li><a class="reference internal" href="#graph-with-nodes-only-and-no-edges">Graph with Nodes only and No Edges</a></li>
 <li><a class="reference internal" href="#data-flow-statistics-and-logging">Data Flow Statistics and Logging</a></li>
 <li><a class="reference internal" href="#concurrent-tasks-per-node">Concurrent Tasks Per Node</a></li>
 <li><a class="reference internal" href="#halting-graph-execution-upon-exceptions">Halting Graph Execution upon Exceptions</a></li>

@@ -89,8 +89,8 @@ BSD 3-Clause License.
 Links
 -----
 
-* This documentation: https://civisanalytics.github.io/async-graph-data-flow
-* Source code and bug tracker: https://github.com/civisanalytics/async-graph-data-flow
+* `Blog post <https://www.civisanalytics.com/blog/open-source-software-release-introducing-async-graph-data-flow-a-python-library-for-efficient-data-pipelines/>`_ introducing this package
+* `Source code and bug tracker <https://github.com/civisanalytics/async-graph-data-flow>`_
 
 Authors
 -------
