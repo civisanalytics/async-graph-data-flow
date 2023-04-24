@@ -90,6 +90,14 @@ class AsyncExecutor:
         of ``"in"``, ``"out"``, and ``"err"``, each corresponding to its count (int)."""
         return self._data_flow_stats
 
+    @property
+    def start_nodes(self) -> dict[str, tuple] | None:
+        """Start nodes and their arguments.
+
+        This is a dictionary that maps each start node (str) to its arguments
+        to be passed in when the graph execution begins."""
+        return self._start_node_args
+
     def turn_on_data_flow_logging(
         self,
         node_format: Optional[str] = None,
