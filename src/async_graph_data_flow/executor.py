@@ -65,12 +65,14 @@ class AsyncExecutor:
         return self._graph
 
     @property
-    def exceptions(self) -> dict[str, list[Exception]]:
+    def exceptions(self) -> dict[str, list[Exception]] | None:
         """Exceptions from the graph execution.
 
         The key is a node by name (str), and the value is the list of exceptions
         raised from the node.
         """
+        if self._exceptions is None:
+            return
         from_deque_to_list = {}
         for node_name, excs in self._exceptions.items():
             # `excs` is a deque. Turning it into a list for user-friendliness.
@@ -78,7 +80,7 @@ class AsyncExecutor:
         return from_deque_to_list
 
     @property
-    def data_flow_stats(self) -> dict[str, dict[str, int]]:
+    def data_flow_stats(self) -> dict[str, dict[str, int]] | None:
         """Data flow statistics.
 
         These statistics keep track of (i) the number of times data has passed
