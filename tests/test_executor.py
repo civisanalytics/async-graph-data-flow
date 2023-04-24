@@ -431,6 +431,8 @@ def test_exceptions():
     graph.add_edge("node1", "node2")
 
     executor = AsyncExecutor(graph)
+    assert executor.exceptions is None
+
     executor.execute()
     excs = executor.exceptions
 
@@ -449,3 +451,21 @@ def test_exceptions():
     assert executor.data_flow_stats["node2"].get("in") == 2
     assert executor.data_flow_stats["node2"].get("out") == 0
     assert executor.data_flow_stats["node2"].get("err") == 2
+
+
+def test_graph_with_no_edges():
+    async def node1(data):
+        yield
+
+    async def node2(data):
+        yield
+
+    graph = AsyncGraph()
+    graph.add_node(node1)
+    graph.add_node(node2)
+
+    executor = AsyncExecutor(graph)
+    assert executor.start_nodes == {"node1": tuple(), "node2": tuple()}
+
+    executor.execute(start_nodes={"node1": ("foo",)})
+    assert executor.start_nodes == {"node1": ("foo",)}
