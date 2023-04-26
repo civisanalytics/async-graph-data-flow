@@ -65,12 +65,14 @@ class AsyncExecutor:
         return self._graph
 
     @property
-    def exceptions(self) -> dict[str, list[Exception]]:
+    def exceptions(self) -> dict[str, list[Exception]] | None:
         """Exceptions from the graph execution.
 
         The key is a node by name (str), and the value is the list of exceptions
         raised from the node.
         """
+        if self._exceptions is None:
+            return
         from_deque_to_list = {}
         for node_name, excs in self._exceptions.items():
             # `excs` is a deque. Turning it into a list for user-friendliness.
@@ -78,7 +80,7 @@ class AsyncExecutor:
         return from_deque_to_list
 
     @property
-    def data_flow_stats(self) -> dict[str, dict[str, int]]:
+    def data_flow_stats(self) -> dict[str, dict[str, int]] | None:
         """Data flow statistics.
 
         These statistics keep track of (i) the number of times data has passed
@@ -87,6 +89,16 @@ class AsyncExecutor:
         The key is a node by name (str), and the value is a dict with three keys (str)
         of ``"in"``, ``"out"``, and ``"err"``, each corresponding to its count (int)."""
         return self._data_flow_stats
+
+    @property
+    def start_nodes(self) -> dict[str, tuple]:
+        """Start nodes and their arguments.
+
+        This is a dictionary that maps each start node (str) to its arguments
+        to be passed in when the graph execution begins."""
+        if self._start_node_args is None:
+            self._start_node_args = self._get_start_node_args(None)
+        return self._start_node_args
 
     def turn_on_data_flow_logging(
         self,
