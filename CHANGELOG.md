@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Security
 
+## [1.3.0] - 2023-06-20
+
+### Added
+- `AsyncGraph.add_node` has the new keyword argument `check_async_gen` 
+  to optionally disable the async generator function check for advanced usage.
+
 ## [1.2.0] - 2023-04-25
 
 ### Added
