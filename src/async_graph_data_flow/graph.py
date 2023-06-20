@@ -1,6 +1,6 @@
 import inspect
 from collections import OrderedDict
-from typing import Any, Callable, NamedTuple, Optional
+from typing import Any, Callable, NamedTuple
 
 
 _DEFAULT_NUM_OF_WORKERS = 1
@@ -37,11 +37,12 @@ class AsyncGraph:
         self,
         func: Callable,
         *,
-        name: Optional[str] = None,
-        halt_on_exception: Optional[bool] = False,
-        unpack_input: Optional[bool] = True,
-        max_tasks: Optional[int] = 1,
-        queue_size: Optional[int] = 10_000,
+        name: str | None = None,
+        halt_on_exception: bool = False,
+        unpack_input: bool = True,
+        max_tasks: int = 1,
+        queue_size: int = 10_000,
+        check_async_gen: bool = True,
     ) -> None:
         """Add a node by providing its function and optional configurations.
 
@@ -68,16 +69,20 @@ class AsyncGraph:
             The maximum number of data items allowed to be
             in the :class:`~asyncio.Queue` object between this node as a source
             and its destination node(s).
+        check_async_gen : bool, optional
+            If ``True`` (the default), the callable ``func`` is verified to be an async
+            generator function by :func:`inspect.isasyncgenfunction`.
+            Pass in ``False`` to disable this check if ``func`` would fail the check
+            while the callable under the hood is still an async generator function
+            (e.g., your function is wrapped by a decorator).
 
         Notes
         -----
-        These details concern the reqiurements of the node's function and the keyword
+        These details concern the requirements of the node's function and the keyword
         argument ``unpack_input``.
 
         * Each function in the graph must be an **asynchronous generator function**,
           i.e., it's defined by ``async def`` and it yields.
-          Implementationally, calling :func:`inspect.isasyncgenfunction`
-          on your function must return ``True``.
 
         * Each function can have any signature,
           with no arguments or with any valid argument types
@@ -123,7 +128,7 @@ class AsyncGraph:
         """  # noqa: E501
 
         name = name or func.__name__
-        if not inspect.isasyncgenfunction(func):
+        if check_async_gen and not inspect.isasyncgenfunction(func):
             raise TypeError(f"node '{name}' isn't an async generator function")
         if name in self._nodes:
             raise ValueError(f"node '{name}' already exists in the graph")

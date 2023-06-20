@@ -4,7 +4,7 @@ import logging
 import time
 import traceback
 from collections import deque
-from typing import Any, Iterable, Optional
+from typing import Any, Iterable
 
 from .graph import AsyncGraph, InvalidAsyncGraphError
 
@@ -102,10 +102,10 @@ class AsyncExecutor:
 
     def turn_on_data_flow_logging(
         self,
-        node_format: Optional[str] = None,
-        node_filter: Iterable[str] = None,
-        time_interval: Optional[int] = None,
-        logger: logging.Logger = None,
+        node_format: str | None = None,
+        node_filter: Iterable[str] | None = None,
+        time_interval: int | None = None,
+        logger: logging.Logger | None = None,
     ):
         """Turn on and configure data flow logging.
 

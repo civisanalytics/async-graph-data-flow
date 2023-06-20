@@ -1,3 +1,4 @@
+import inspect
 from unittest import mock
 
 import pytest
@@ -38,6 +39,30 @@ class TestAsyncGraphAddNode:
         assert str(excinfo.value) == (
             "node 'none_node' isn't an async generator function"
         )
+
+    def test_add_node_disable_async_gen_func_check(self):
+        async def some_func():
+            yield "foo"
+
+        def some_decorator(func):
+            def inner_func(*args, **kwargs):
+                yield from func(*args, **kwargs)
+
+            inner_func.__name__ = func.__name__
+            return inner_func
+
+        assert inspect.isasyncgenfunction(some_func)
+        AsyncGraph().add_node(some_func)  # Should raise no error, compare with below
+
+        some_func = some_decorator(some_func)
+
+        assert not inspect.isasyncgenfunction(some_func)
+        with pytest.raises(TypeError) as excinfo:
+            AsyncGraph().add_node(some_func)
+        assert str(excinfo.value) == (
+            "node 'some_func' isn't an async generator function"
+        )
+        AsyncGraph().add_node(some_func, check_async_gen=False)
 
     def test_add_node_with_valid_node_args(self):
         etl_graph = async_graph_without_nodes_mock()
