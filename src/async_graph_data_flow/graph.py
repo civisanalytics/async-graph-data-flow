@@ -1,22 +1,25 @@
+import asyncio
+import dataclasses
 import inspect
 from collections import OrderedDict
-from typing import Any, Callable, NamedTuple
-
-
-_DEFAULT_NUM_OF_WORKERS = 1
+from typing import Any, Callable, Iterable
 
 
 class InvalidAsyncGraphError(Exception):
     pass
 
 
-class _Node(NamedTuple):
+@dataclasses.dataclass(slots=True)
+class _Node:
     func: Callable
     name: str
     queue_size: int
     max_tasks: int
     halt_on_exception: bool
     unpack_input: bool
+    block_until_after: Iterable[str | Callable] | None
+    blocker: asyncio.Event | None
+    done: bool
 
 
 class AsyncGraph:
@@ -31,7 +34,8 @@ class AsyncGraph:
         """
         self.halt_on_exception = halt_on_exception
         self._nodes: dict[str, _Node] = {}
-        self._nodes_to_edges: OrderedDict[str, set[str]] = OrderedDict()
+        self._src_to_dst_nodes: OrderedDict[str, set[str]] = OrderedDict()
+        self._dst_to_src_nodes: OrderedDict[str, set[str]] = OrderedDict()
 
     def add_node(
         self,
@@ -42,6 +46,7 @@ class AsyncGraph:
         unpack_input: bool = True,
         max_tasks: int = 1,
         queue_size: int = 10_000,
+        block_until_after: Iterable[str | Callable] | None = None,
         check_async_gen: bool = True,
     ) -> None:
         """Add a node by providing its function and optional configurations.
@@ -69,6 +74,10 @@ class AsyncGraph:
             The maximum number of data items allowed to be
             in the :class:`~asyncio.Queue` object between this node as a source
             and its destination node(s).
+        block_until_after : Iterable[str], optional
+            If given, this is an iterable of node names.
+            This current node is blocked until after these specified nodes
+            have all finished.
         check_async_gen : bool, optional
             If ``True`` (the default), the callable ``func`` is verified to be an async
             generator function by :func:`inspect.isasyncgenfunction`.
@@ -139,8 +148,12 @@ class AsyncGraph:
             max_tasks=max_tasks,
             halt_on_exception=halt_on_exception,
             unpack_input=unpack_input,
+            block_until_after=block_until_after,
+            blocker=asyncio.Event() if block_until_after else None,
+            done=False,
         )
-        self._nodes_to_edges[name] = set()
+        self._src_to_dst_nodes[name] = set()
+        self._dst_to_src_nodes[name] = set()
 
     def add_edge(self, src_node: str | Callable, dst_node: str | Callable) -> None:
         """Add an edge.
@@ -162,7 +175,8 @@ class AsyncGraph:
         if dst_node not in self._nodes:
             raise ValueError(f"dst_node '{dst_node}' not registered in the graph")
 
-        self._nodes_to_edges[src_node].add(dst_node)
+        self._src_to_dst_nodes[src_node].add(dst_node)
+        self._dst_to_src_nodes[dst_node].add(src_node)
 
         if self._is_graph_cyclic():
             raise InvalidAsyncGraphError("Graph has a cycle")
@@ -170,21 +184,21 @@ class AsyncGraph:
     @property
     def nodes(self) -> list[dict[str, Any]]:
         """The list of nodes, each with its function and configurations."""
-        return [node._asdict() for node in self._nodes.values()]
+        return [dataclasses.asdict(node) for node in self._nodes.values()]
 
     @property
     def edges(self) -> set[tuple[str, str]]:
         """The set of edges, each with the names of the source and destination nodes."""
         return {
             (src_node, dst_node)
-            for src_node, dst_nodes in self._nodes_to_edges.items()
+            for src_node, dst_nodes in self._src_to_dst_nodes.items()
             for dst_node in dst_nodes
         }
 
     @property
     def nodes_to_edges(self) -> dict[str, set[str]]:
         """The mapping between source nodes and their destination nodes."""
-        return dict(self._nodes_to_edges)
+        return dict(self._src_to_dst_nodes)
 
     def _graph_validator(
         self,
@@ -195,7 +209,7 @@ class AsyncGraph:
     ) -> bool:
         """Code based on: https://www.geeksforgeeks.org/detect-cycle-in-a-graph/"""
         # Use the OrderedDict self._nodes_to_edges for its ordering.
-        nodes = list(self._nodes_to_edges.keys())
+        nodes = list(self._src_to_dst_nodes.keys())
         is_checked[i] = True
         iter_stack[i] = True
 
@@ -227,16 +241,16 @@ class AsyncGraph:
         iter_stack = is_checked = [False] * (len(self._nodes) + 1)
         for i in range(len(self._nodes)):
             if not is_checked[i] and self._graph_validator(
-                i, is_checked, iter_stack, self._nodes_to_edges
+                i, is_checked, iter_stack, self._src_to_dst_nodes
             ):
                 return True
         return False
 
     def _get_start_nodes(self) -> set[str]:
         root_nodes = set()
-        for src_node in self._nodes_to_edges.keys():
+        for src_node in self._src_to_dst_nodes.keys():
             root_node = True
-            for dst_nodes in self._nodes_to_edges.values():
+            for dst_nodes in self._src_to_dst_nodes.values():
                 if src_node in dst_nodes:
                     root_node = False
                     break

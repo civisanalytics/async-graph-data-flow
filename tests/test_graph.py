@@ -86,6 +86,9 @@ class TestAsyncGraphAddNode:
                 "name": "extract_node",
                 "queue_size": 10_000,
                 "unpack_input": True,
+                "block_until_after": None,
+                "blocker": None,
+                "done": False,
             },
             {
                 "func": mock.ANY,
@@ -94,6 +97,9 @@ class TestAsyncGraphAddNode:
                 "name": "transform_node",
                 "queue_size": 10_000,
                 "unpack_input": True,
+                "block_until_after": None,
+                "blocker": None,
+                "done": False,
             },
             {
                 "func": mock.ANY,
@@ -102,6 +108,9 @@ class TestAsyncGraphAddNode:
                 "name": "load_node",
                 "queue_size": 10_000,
                 "unpack_input": True,
+                "block_until_after": None,
+                "blocker": None,
+                "done": False,
             },
         ]
 

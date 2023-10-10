@@ -3,16 +3,20 @@ import inspect
 import logging
 import time
 import traceback
-from collections import deque
+from collections import defaultdict, deque
 from typing import Any, Iterable
 
-from .graph import AsyncGraph, InvalidAsyncGraphError
+from .graph import _Node, AsyncGraph, InvalidAsyncGraphError
 
 
 _LOG = logging.getLogger(__name__)
 
 _DEFAULT_DATA_FLOW_LOGGING_NODE_FORMAT = " {node} - in={in}, out={out}, err={err}"
 _DEFAULT_DATA_FLOW_LOGGING_TIME_INTERVAL = 60  # in seconds
+
+
+# A sentinel value to signal the end of data flow in a queue.
+_EndOfDataToken = object()
 
 
 class AsyncExecutor:
@@ -58,6 +62,8 @@ class AsyncExecutor:
         self._start_node_args = None
 
         self._exceptions = None
+
+        self._blockers_to_blockees = None
 
     @property
     def graph(self) -> AsyncGraph:
@@ -169,14 +175,25 @@ class AsyncExecutor:
             edge_queue = self._node_queues[edge]
             await edge_queue.put(item)
 
+    def _get_node(self, node_name) -> _Node:
+        return self._graph._nodes[node_name]
+
     async def _producer(self):
         """Push args to start nodes' queue in graph to begin pipeline."""
         for node, args in self._start_node_args.items():
             queue = self._node_queues[node]
             await queue.put(args)
+            await queue.put(_EndOfDataToken)
 
     async def _consumer(self, node_name: str):
         """Consume and process data within the graph pipeline."""
+        node = self._get_node(node_name)
+        dst_nodes = self._graph._src_to_dst_nodes[node_name]
+
+        if node.blocker and not all(
+            self._get_node(n).done for n in node.block_until_after
+        ):
+            await node.blocker.wait()
         while True:
             try:
                 if self._data_flow_logging and self._data_flow_logging_last_timestamp:
@@ -192,11 +209,22 @@ class AsyncExecutor:
                 queue = self._node_queues[node_name]
                 data = await queue.get()
 
+                if data is _EndOfDataToken:
+                    queue.task_done()
+                    node.done = True
+                    blockee_nodes: list[_Node] = [
+                        self._get_node(n) for n in self._blockers_to_blockees[node_name]
+                    ]
+                    for blockee_node in blockee_nodes:
+                        blocker_node_names = blockee_node.block_until_after
+                        if all(self._get_node(n).done for n in blocker_node_names):
+                            blockee_node.blocker.set()  # Unblock the blockee node
+                    continue
+
                 if self._halt_pipeline_execution:
                     queue.task_done()
                     continue
 
-                node = self._graph._nodes[node_name]
                 params = inspect.signature(node.func).parameters
 
                 try:
@@ -254,10 +282,14 @@ class AsyncExecutor:
                         else:
                             continue
                     else:
-                        node_edges = self._graph._nodes_to_edges[node_name]
-                        await self._update_data_flow_in_out_stats(node_name, node_edges)
-                        await self._add_to_node_queue(node_edges, next_data_item)
+                        await self._update_data_flow_in_out_stats(node_name, dst_nodes)
+                        await self._add_to_node_queue(dst_nodes, next_data_item)
 
+                if all(
+                    self._get_node(n).done
+                    for n in self._graph._dst_to_src_nodes[node_name]
+                ):
+                    await self._add_to_node_queue(dst_nodes, _EndOfDataToken)
                 queue.task_done()
             except asyncio.CancelledError:
                 break
@@ -276,6 +308,11 @@ class AsyncExecutor:
     async def _pipeline_execution(self):
         self._data_flow_stats: dict[str, dict[str, int]] = {}
         self._exceptions: dict[str, deque[Exception]] = {}
+        self._blockers_to_blockees: dict[str, set[str]] = defaultdict(set)
+
+        for blockee_node in self._graph._nodes.values():
+            for blocker_node_name in blockee_node.block_until_after or []:
+                self._blockers_to_blockees[blocker_node_name].add(blockee_node.name)
 
         for node_name, node in self._graph._nodes.items():
             queue = asyncio.Queue(maxsize=node.queue_size)
