@@ -189,9 +189,9 @@ class AsyncExecutor:
 
     async def _consumer(self, node_name: str):
         """Consume and process data within the graph pipeline."""
-        node = self._get_node(node_name)
-        dst_nodes = self._graph._src_to_dst_nodes[node_name]
-        src_nodes = self._graph._dst_to_src_nodes[node_name]
+        node: _Node = self._get_node(node_name)
+        dst_node_names: set[str] = self._graph._src_to_dst_nodes[node_name]
+        src_node_names: set[str] = self._graph._dst_to_src_nodes[node_name]
 
         if node.blocker and not all(
             self._get_node(n).done for n in node.block_until_after
@@ -215,7 +215,7 @@ class AsyncExecutor:
                 if isinstance(data, _EndOfDataToken):
                     queue.task_done()
                     all_other_src_nodes_done = all(
-                        self._get_node(n).done for n in src_nodes if n != node_name
+                        self._get_node(n).done for n in src_node_names if n != node_name
                     )
                     if data.src_node is None or all_other_src_nodes_done:
                         node.done = True
@@ -227,7 +227,7 @@ class AsyncExecutor:
                             if all(self._get_node(n).done for n in blocker_node_names):
                                 blockee_node.blocker.set()  # Unblock the blockee node
                         await self._add_to_node_queue(
-                            dst_nodes, _EndOfDataToken(node_name)
+                            dst_node_names, _EndOfDataToken(node_name)
                         )
                     continue
 
@@ -292,8 +292,10 @@ class AsyncExecutor:
                         else:
                             continue
                     else:
-                        await self._update_data_flow_in_out_stats(node_name, dst_nodes)
-                        await self._add_to_node_queue(dst_nodes, next_data_item)
+                        await self._update_data_flow_in_out_stats(
+                            node_name, dst_node_names
+                        )
+                        await self._add_to_node_queue(dst_node_names, next_data_item)
 
                 queue.task_done()
             except asyncio.CancelledError:
