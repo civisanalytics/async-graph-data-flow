@@ -104,5 +104,6 @@ Table of Contents
    :maxdepth: 2
 
    quickstart
+   intro
    more_examples
    api

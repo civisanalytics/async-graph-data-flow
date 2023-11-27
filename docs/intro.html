@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Quickstart" href="quickstart.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="More Examples" href="more_examples.html" /><link rel="prev" title="Quickstart" href="quickstart.html" />
 
     <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
-        <title>async-graph-data-flow documentation</title>
+        <title>Introduction - async-graph-data-flow documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">async-graph-data-flow  documentation</div></a>
+      <a href="index.html"><div class="brand">async-graph-data-flow  documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -144,7 +144,7 @@
   <aside class="sidebar-drawer">
     <div class="sidebar-container">
       
-      <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
   <span class="sidebar-brand-text">async-graph-data-flow  documentation</span>
@@ -155,9 +155,9 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul>
+  <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="more_examples.html">More Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 </ul>
@@ -194,115 +194,44 @@
           </label>
         </div>
         <article role="main">
-          <section id="async-graph-data-flow">
-<span id="index"></span><h1>async-graph-data-flow<a class="headerlink" href="#async-graph-data-flow" title="Permalink to this heading">#</a></h1>
-<a class="reference external image-reference" href="https://pypi.python.org/pypi/async-graph-data-flow"><img alt="PyPI version" src="https://badge.fury.io/py/async-graph-data-flow.svg" /></a>
-<a class="reference external image-reference" href="https://pypi.python.org/pypi/async-graph-data-flow"><img alt="Supported Python versions" src="https://img.shields.io/pypi/pyversions/async-graph-data-flow.svg" /></a>
-<p><code class="docutils literal notranslate"><span class="pre">async-graph-data-flow</span></code> is a Python library for executing asynchronous functions
-that pass data along a directed acyclic graph (DAG).</p>
-<section id="features">
-<h2>Features<a class="headerlink" href="#features" title="Permalink to this heading">#</a></h2>
-<ul class="simple">
-<li><p><strong>Functions organized as a graph</strong> 🕸</p></li>
-</ul>
-<p>Your asynchronous functions are nodes in the DAG.
-Each node yields data to its destination nodes.</p>
-<ul class="simple">
-<li><p><strong>Let data flow along the graph</strong> 🥂</p></li>
-</ul>
-<p>It’s like how champagne flows along a champagne tower.
-Graph execution continues as long as there’s still data between two connected nodes.</p>
-<ul class="simple">
-<li><p><strong>Customizable start nodes</strong> 🧨</p></li>
-</ul>
-<p>By default, graph execution begins with nodes that have no incoming nodes,
-but you can choose to start the graph execution from any nodes.</p>
-<ul class="simple">
-<li><p><strong>Data flow statistics</strong> ⏳</p></li>
-</ul>
-<p>Utilities are available to keep track of data volumes at each node
-and optionally log such info at a regular time interval.</p>
-<ul class="simple">
-<li><p><strong>Exception handling</strong> 💥</p></li>
-</ul>
-<p>Choose whether to halt execution at a specific node or any node.</p>
-<ul class="simple">
-<li><p><strong>Lightweight</strong> 🪶</p></li>
-</ul>
-<p>The source code is only about 400 lines!</p>
-<ul class="simple">
-<li><p><strong>Single-machine Usage</strong> 💻</p></li>
-</ul>
-<p>We love Big Data™ and distributed computing,
-though deep down we all know that practically we accomplish a ton of work on single machines
-without those big guns.</p>
-<ul class="simple">
-<li><p><strong>Pure Python</strong> 🐍</p></li>
-</ul>
-<p>The library is built on top of <code class="docutils literal notranslate"><span class="pre">asyncio</span></code> from the Python standard library, with no third-party dependencies.</p>
-</section>
-<section id="download-and-install">
-<h2>Download and Install<a class="headerlink" href="#download-and-install" title="Permalink to this heading">#</a></h2>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>async-graph-data-flow
+          <section id="introduction">
+<span id="intro"></span><h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">#</a></h1>
+<section id="functions-arranged-as-a-graph">
+<h2>Functions Arranged as a Graph<a class="headerlink" href="#functions-arranged-as-a-graph" title="Permalink to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">async-graph-data-flow</span></code> package provides a framework for arranging
+functions in a directed acyclic graph (DAG).</p>
+<div class="mermaid">
+            flowchart LR
+
+A[func1] --&gt; B[func2]
+B --&gt; C[func3]
+B --&gt; D[func4]
+C --&gt; E[func5]
+D --&gt; E
+        </div><p>Each function must be an asynchronous generator function,
+which means it is defined with the <code class="docutils literal notranslate"><span class="pre">async</span></code> keyword
+and yields something.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">func1</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="k">yield</span> <span class="n">output</span>
 </pre></div>
 </div>
-</section>
-<section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">#</a></h2>
-<p>Start with <a class="reference internal" href="quickstart.html#quickstart"><span class="std std-ref">Quickstart</span></a>, and then get inspired by <a class="reference internal" href="more_examples.html#more-examples"><span class="std std-ref">More Examples</span></a>.
-Don’t forget to check out the <a class="reference internal" href="api.html#api"><span class="std std-ref">API Reference</span></a> as well.</p>
-</section>
-<section id="under-the-hood">
-<h2>Under the Hood<a class="headerlink" href="#under-the-hood" title="Permalink to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">async-graph-data-flow</span></code> chains asynchronous functions together
-with a <a class="reference external" href="https://docs.python.org/3/library/asyncio-queue.html#asyncio.Queue" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Queue</span></code></a> instance between two functions in the graph.
-A queue keeps track of the data items yielded from a source node and feeds them
-into its destination node.</p>
-</section>
-<section id="license">
-<h2>License<a class="headerlink" href="#license" title="Permalink to this heading">#</a></h2>
-<p>BSD 3-Clause License.</p>
-</section>
-<section id="links">
-<h2>Links<a class="headerlink" href="#links" title="Permalink to this heading">#</a></h2>
-<ul class="simple">
-<li><p><a class="reference external" href="https://www.civisanalytics.com/blog/open-source-software-release-introducing-async-graph-data-flow-a-python-library-for-efficient-data-pipelines/">Blog post</a> introducing this package</p></li>
-<li><p><a class="reference external" href="https://github.com/civisanalytics/async-graph-data-flow">Source code and bug tracker</a></p></li>
-</ul>
-</section>
-<section id="authors">
-<h2>Authors<a class="headerlink" href="#authors" title="Permalink to this heading">#</a></h2>
-<p>This library is authored by Samuel Asirifi, Gbolahan Okerayi, and Jackson Lee at Civis Analytics.</p>
-</section>
-<section id="table-of-contents">
-<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this heading">#</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="intro.html#functions-arranged-as-a-graph">Functions Arranged as a Graph</a></li>
-<li class="toctree-l2"><a class="reference internal" href="intro.html#queues-and-tasks-from-asyncio">Queues and Tasks from <code class="docutils literal notranslate"><span class="pre">asyncio</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="more_examples.html">More Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="more_examples.html#customizable-start-nodes">Customizable Start Nodes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="more_examples.html#graph-with-nodes-only-and-no-edges">Graph with Nodes only and No Edges</a></li>
-<li class="toctree-l2"><a class="reference internal" href="more_examples.html#data-flow-statistics-and-logging">Data Flow Statistics and Logging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="more_examples.html#concurrent-tasks-per-node">Concurrent Tasks Per Node</a></li>
-<li class="toctree-l2"><a class="reference internal" href="more_examples.html#halting-graph-execution-upon-exceptions">Halting Graph Execution upon Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="more_examples.html#accessing-and-raising-an-exception">Accessing and Raising an Exception</a></li>
-<li class="toctree-l2"><a class="reference internal" href="more_examples.html#incorporating-a-synchronous-function">Incorporating a Synchronous Function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="more_examples.html#shared-state-across-asynchronous-functions">Shared State Across Asynchronous Functions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api.html#async_graph_data_flow.AsyncGraph"><code class="docutils literal notranslate"><span class="pre">AsyncGraph</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor"><code class="docutils literal notranslate"><span class="pre">AsyncExecutor</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#async_graph_data_flow.graph.InvalidAsyncGraphError"><code class="docutils literal notranslate"><span class="pre">InvalidAsyncGraphError</span></code></a></li>
-</ul>
-</li>
-</ul>
-</div>
+<p>For two nodes to be connected correctly in terms of function definition,
+the source node’s function must yield what the destination node’s function
+expects as input.</p>
+<div class="mermaid">
+            flowchart LR
+
+START[ ] -.-&gt; A
+B -.-&gt; STOP[ ]
+A[&quot;async def func2(...):\n&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;...\n&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;yield &lt;strong&gt;foo, bar&lt;/strong&gt;&quot;] --&gt; B[&quot;async def func3(&lt;strong&gt;foo, bar&lt;/strong&gt;):\n&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;...\n&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;yield ...&quot;]
+style A text-align:left
+style B text-align:left
+style START fill-opacity:0, stroke-opacity:0;
+style STOP  fill-opacity:0, stroke-opacity:0;
+        </div></section>
+<section id="queues-and-tasks-from-asyncio">
+<h2>Queues and Tasks from <code class="docutils literal notranslate"><span class="pre">asyncio</span></code><a class="headerlink" href="#queues-and-tasks-from-asyncio" title="Permalink to this heading">#</a></h2>
 </section>
 </section>
 
@@ -311,16 +240,26 @@ into its destination node.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="quickstart.html">
+          <a class="next-page" href="more_examples.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Quickstart</div>
+                <div class="title">More Examples</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          
+          <a class="prev-page" href="quickstart.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Quickstart</div>
+                
+              </div>
+            </a>
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
@@ -351,15 +290,9 @@ into its destination node.</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">async-graph-data-flow</a><ul>
-<li><a class="reference internal" href="#features">Features</a></li>
-<li><a class="reference internal" href="#download-and-install">Download and Install</a></li>
-<li><a class="reference internal" href="#usage">Usage</a></li>
-<li><a class="reference internal" href="#under-the-hood">Under the Hood</a></li>
-<li><a class="reference internal" href="#license">License</a></li>
-<li><a class="reference internal" href="#links">Links</a></li>
-<li><a class="reference internal" href="#authors">Authors</a></li>
-<li><a class="reference internal" href="#table-of-contents">Table of Contents</a></li>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#functions-arranged-as-a-graph">Functions Arranged as a Graph</a></li>
+<li><a class="reference internal" href="#queues-and-tasks-from-asyncio">Queues and Tasks from <code class="docutils literal notranslate"><span class="pre">asyncio</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -377,5 +310,7 @@ into its destination node.</p>
     <script src="_static/scripts/furo.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
+    <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
     </body>
 </html>
