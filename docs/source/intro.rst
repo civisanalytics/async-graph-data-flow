@@ -46,7 +46,5 @@ expects as input.
     style STOP  fill-opacity:0, stroke-opacity:0;
 
 
-
-
-Queues and Tasks from ``asyncio``
----------------------------------
+Queues and Tasks
+----------------

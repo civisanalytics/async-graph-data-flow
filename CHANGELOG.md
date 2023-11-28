@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Security
 
+## [1.4.0] - 2023-12-01
+
+### Added
+- Python 3.12 is officially supported and tested.
+- Added a technical introduction page to the Sphinx documentation.
+
 ## [1.3.0] - 2023-06-20
 
 ### Added
