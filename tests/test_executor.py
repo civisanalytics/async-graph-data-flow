@@ -442,7 +442,7 @@ def test_exceptions():
     actual_exc_msgs = [e.args[0] for e in excs["node2"]]
     expected_exc_msgs = ["bad data: hello", "bad data: world"]
     assert actual_exc_msgs == expected_exc_msgs
-    assert all(type(e) == ValueError for e in excs["node2"])
+    assert all(type(e) is ValueError for e in excs["node2"])
 
     assert executor.data_flow_stats["node1"].get("in") == 0
     assert executor.data_flow_stats["node1"].get("out") == 2

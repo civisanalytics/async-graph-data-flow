@@ -157,7 +157,7 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="technical.html">Technical Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="more_examples.html">More Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 </ul>
@@ -249,15 +249,10 @@ without those big guns.</p>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h2>
-<p>Start with <a class="reference internal" href="quickstart.html#quickstart"><span class="std std-ref">Quickstart</span></a>, and then get inspired by <a class="reference internal" href="more_examples.html#more-examples"><span class="std std-ref">More Examples</span></a>.
+<p>Start with <a class="reference internal" href="quickstart.html#quickstart"><span class="std std-ref">Quickstart</span></a>.
+To better understand how the library works, see <a class="reference internal" href="technical.html#technical"><span class="std std-ref">Technical Notes</span></a>.
+Then get inspired by and see what features are available from <a class="reference internal" href="more_examples.html#more-examples"><span class="std std-ref">More Examples</span></a>.
 Don’t forget to check out the <a class="reference internal" href="api.html#api"><span class="std std-ref">API Reference</span></a> as well.</p>
-</section>
-<section id="under-the-hood">
-<h2>Under the Hood<a class="headerlink" href="#under-the-hood" title="Link to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">async-graph-data-flow</span></code> chains asynchronous functions together
-with a <a class="reference external" href="https://docs.python.org/3/library/asyncio-queue.html#asyncio.Queue" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Queue</span></code></a> instance between two functions in the graph.
-A queue keeps track of the data items yielded from a source node and feeds them
-into its destination node.</p>
 </section>
 <section id="license">
 <h2>License<a class="headerlink" href="#license" title="Link to this heading">#</a></h2>
@@ -279,9 +274,10 @@ into its destination node.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="intro.html#functions-arranged-as-a-graph">Functions Arranged as a Graph</a></li>
-<li class="toctree-l2"><a class="reference internal" href="intro.html#queues-and-tasks">Queues and Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="technical.html">Technical Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="technical.html#functions-arranged-as-a-graph">Functions Arranged as a Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="technical.html#tasks-and-queues">Tasks and Queues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="technical.html#example">Example</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="more_examples.html">More Examples</a><ul>
@@ -325,7 +321,7 @@ into its destination node.</p>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2022 - 2023, Civis Analytics. Documentation last updated on 2023-11-28.
+                Copyright &#169; 2022 - 2023, Civis Analytics. Documentation last updated on 2023-11-30.
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -355,7 +351,6 @@ into its destination node.</p>
 <li><a class="reference internal" href="#features">Features</a></li>
 <li><a class="reference internal" href="#download-and-install">Download and Install</a></li>
 <li><a class="reference internal" href="#usage">Usage</a></li>
-<li><a class="reference internal" href="#under-the-hood">Under the Hood</a></li>
 <li><a class="reference internal" href="#license">License</a></li>
 <li><a class="reference internal" href="#links">Links</a></li>
 <li><a class="reference internal" href="#authors">Authors</a></li>
