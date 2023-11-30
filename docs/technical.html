@@ -252,18 +252,24 @@ available to process it.</p>
             flowchart LR
 
 start1[ ] -.- queue1((&quot;&amp;nbsp;&amp;nbsp;&quot;))
-queue1 --&gt; node1[&quot;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;]
+subgraph box1 [ ]
+    queue1 --&gt; node1[&quot;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;]
+end
 style start1 fill-opacity:0, stroke-opacity:0;
 
 start2[ ] -.- queue2((&quot;&amp;nbsp;&amp;nbsp;&quot;))
-queue2 --&gt; node2[&quot;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;]
+subgraph box2 [ ]
+    queue2 --&gt; node2[&quot;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;]
+end
 style start2 fill-opacity:0, stroke-opacity:0;
 
-queue3((queue)) --&gt; node3[task 1, task 2,\ntask 3, ...]
+subgraph node and its associated queue
+    queue3((queue)) --&gt; node3[task 1, task 2,\ntask 3, ...]
+end
 
-node1 --&gt; |yields\nitems...| queue3
-node2 --&gt; |yields\nitems...| queue3
-node3 -.-&gt; |yields\nitems...| STOP[ ]
+node1 --&gt; |yields\nitems| queue3
+node2 --&gt; |yields\nitems| queue3
+node3 -.-&gt; |yields\nitems| STOP[ ]
 style STOP  fill-opacity:0, stroke-opacity:0;
         </div></section>
 <section id="example">
@@ -384,7 +390,7 @@ inputs from the items yielded by <code class="docutils literal notranslate"><spa
 Q((&quot;Queue items:\n[{'col1': 'val1', ...}, ...]\n[{'col1': 'val1', ...}, ...]\n...\n&quot;))
 A[get_open_brewery_data]
 B[write_to_csv]
-A --&gt; |yields\nitems...| Q
+A --&gt; |yields\nitems| Q
 Q --&gt; B
         </div><p><code class="docutils literal notranslate"><span class="pre">get_open_brewery_data()</span></code> yields a page of the Open Brewery DB data,
 which is a list of records where each record is a dictionary of column names

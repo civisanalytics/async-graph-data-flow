@@ -71,18 +71,24 @@ available to process it.
     flowchart LR
 
     start1[ ] -.- queue1(("&nbsp;&nbsp;"))
-    queue1 --> node1["&nbsp;&nbsp;&nbsp;&nbsp;"]
+    subgraph box1 [ ]
+        queue1 --> node1["&nbsp;&nbsp;&nbsp;&nbsp;"]
+    end
     style start1 fill-opacity:0, stroke-opacity:0;
 
     start2[ ] -.- queue2(("&nbsp;&nbsp;"))
-    queue2 --> node2["&nbsp;&nbsp;&nbsp;&nbsp;"]
+    subgraph box2 [ ]
+        queue2 --> node2["&nbsp;&nbsp;&nbsp;&nbsp;"]
+    end
     style start2 fill-opacity:0, stroke-opacity:0;
 
-    queue3((queue)) --> node3[task 1, task 2,\ntask 3, ...]
+    subgraph node and its associated queue
+        queue3((queue)) --> node3[task 1, task 2,\ntask 3, ...]
+    end
 
-    node1 --> |yields\nitems...| queue3
-    node2 --> |yields\nitems...| queue3
-    node3 -.-> |yields\nitems...| STOP[ ]
+    node1 --> |yields\nitems| queue3
+    node2 --> |yields\nitems| queue3
+    node3 -.-> |yields\nitems| STOP[ ]
     style STOP  fill-opacity:0, stroke-opacity:0;
 
 Example
@@ -216,7 +222,7 @@ inputs from the items yielded by ``get_open_brewery_data()``.
     Q(("Queue items:\n[{'col1': 'val1', ...}, ...]\n[{'col1': 'val1', ...}, ...]\n...\n"))
     A[get_open_brewery_data]
     B[write_to_csv]
-    A --> |yields\nitems...| Q
+    A --> |yields\nitems| Q
     Q --> B
 
 ``get_open_brewery_data()`` yields a page of the Open Brewery DB data,
