@@ -1,16 +1,16 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="./">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="API Reference" href="api.html" /><link rel="prev" title="Quickstart" href="quickstart.html" />
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="API Reference" href="api.html" /><link rel="prev" title="Technical Notes" href="technical.html" />
 
-    <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
         <title>More Examples - async-graph-data-flow documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
-    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
     
     
 
@@ -157,6 +157,7 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="technical.html">Technical Notes</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">More Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 </ul>
@@ -194,7 +195,7 @@
         </div>
         <article role="main">
           <section id="more-examples">
-<span id="id1"></span><h1>More Examples<a class="headerlink" href="#more-examples" title="Permalink to this heading">#</a></h1>
+<span id="id1"></span><h1>More Examples<a class="headerlink" href="#more-examples" title="Link to this heading">#</a></h1>
 <p>While some of the examples below are meant to demonstrate the features
 of the <code class="docutils literal notranslate"><span class="pre">async-graph-data-flow</span></code> library,
 others (e.g., running a synchronous function, sharing state across functions)
@@ -204,7 +205,7 @@ please open an issue at the
 <a class="reference external" href="https://github.com/civisanalytics/async-graph-data-flow">GitHub repository</a>
 for discussion.</p>
 <section id="customizable-start-nodes">
-<h2>Customizable Start Nodes<a class="headerlink" href="#customizable-start-nodes" title="Permalink to this heading">#</a></h2>
+<h2>Customizable Start Nodes<a class="headerlink" href="#customizable-start-nodes" title="Link to this heading">#</a></h2>
 <p>When <a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor" title="async_graph_data_flow.AsyncExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncExecutor</span></code></a>’s <a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor.execute" title="async_graph_data_flow.AsyncExecutor.execute"><code class="xref py py-func docutils literal notranslate"><span class="pre">execute()</span></code></a>
 is called,
 by default the start nodes (= nodes without incoming edges) of the graph are automatically detected and called.
@@ -307,7 +308,7 @@ to select which nodes to execute instead and/or supply the arguments to whicheve
 </div>
 </section>
 <section id="graph-with-nodes-only-and-no-edges">
-<h2>Graph with Nodes only and No Edges<a class="headerlink" href="#graph-with-nodes-only-and-no-edges" title="Permalink to this heading">#</a></h2>
+<h2>Graph with Nodes only and No Edges<a class="headerlink" href="#graph-with-nodes-only-and-no-edges" title="Link to this heading">#</a></h2>
 <p>It is possible to execute a graph with nodes only and no edges.
 In this case,
 if <code class="docutils literal notranslate"><span class="pre">start_nodes</span></code> at <a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor.execute" title="async_graph_data_flow.AsyncExecutor.execute"><code class="xref py py-func docutils literal notranslate"><span class="pre">execute()</span></code></a> are not specified (see above),
@@ -367,7 +368,7 @@ The start nodes and their arguments at the beginning of the graph execution are 
 </div>
 </section>
 <section id="data-flow-statistics-and-logging">
-<h2>Data Flow Statistics and Logging<a class="headerlink" href="#data-flow-statistics-and-logging" title="Permalink to this heading">#</a></h2>
+<h2>Data Flow Statistics and Logging<a class="headerlink" href="#data-flow-statistics-and-logging" title="Link to this heading">#</a></h2>
 <p><a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor" title="async_graph_data_flow.AsyncExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncExecutor</span></code></a>’s <a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor.data_flow_stats" title="async_graph_data_flow.AsyncExecutor.data_flow_stats"><code class="xref py py-attr docutils literal notranslate"><span class="pre">data_flow_stats</span></code></a>
 keeps track of data volumes and errors encountered at each node.
 <a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor.data_flow_stats" title="async_graph_data_flow.AsyncExecutor.data_flow_stats"><code class="xref py py-attr docutils literal notranslate"><span class="pre">data_flow_stats</span></code></a> is a dictionary
@@ -442,7 +443,7 @@ which you can call to turn on and configure logging.</p>
 </div>
 </section>
 <section id="concurrent-tasks-per-node">
-<h2>Concurrent Tasks Per Node<a class="headerlink" href="#concurrent-tasks-per-node" title="Permalink to this heading">#</a></h2>
+<h2>Concurrent Tasks Per Node<a class="headerlink" href="#concurrent-tasks-per-node" title="Link to this heading">#</a></h2>
 <p>By default, each node creates one task at a time.
 To spawn multiple, concurrent tasks from a node,
 set <code class="docutils literal notranslate"><span class="pre">max_tasks</span></code> at <a class="reference internal" href="api.html#async_graph_data_flow.AsyncGraph.add_node" title="async_graph_data_flow.AsyncGraph.add_node"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_node()</span></code></a>.</p>
@@ -506,7 +507,7 @@ set <code class="docutils literal notranslate"><span class="pre">max_tasks</span
 </div>
 </section>
 <section id="halting-graph-execution-upon-exceptions">
-<span id="id2"></span><h2>Halting Graph Execution upon Exceptions<a class="headerlink" href="#halting-graph-execution-upon-exceptions" title="Permalink to this heading">#</a></h2>
+<span id="id2"></span><h2>Halting Graph Execution upon Exceptions<a class="headerlink" href="#halting-graph-execution-upon-exceptions" title="Link to this heading">#</a></h2>
 <p>By default, an unhandled exception from any node does not halt the graph execution.
 This behavior can be altered in two different ways:</p>
 <ul class="simple">
@@ -651,7 +652,7 @@ This behavior can be altered in two different ways:</p>
 </div>
 </section>
 <section id="accessing-and-raising-an-exception">
-<h2>Accessing and Raising an Exception<a class="headerlink" href="#accessing-and-raising-an-exception" title="Permalink to this heading">#</a></h2>
+<h2>Accessing and Raising an Exception<a class="headerlink" href="#accessing-and-raising-an-exception" title="Link to this heading">#</a></h2>
 <p>While it’s possible to halt the graph execution due to unhandled exceptions
 (see <a class="reference internal" href="#halting-graph-execution-upon-exceptions">Halting Graph Execution upon Exceptions</a>),
 these exceptions are not raised from within the <a class="reference internal" href="api.html#async_graph_data_flow.AsyncExecutor.execute" title="async_graph_data_flow.AsyncExecutor.execute"><code class="xref py py-func docutils literal notranslate"><span class="pre">execute()</span></code></a> call.
@@ -704,7 +705,7 @@ and you can determine what to do with this information
 </div>
 </section>
 <section id="incorporating-a-synchronous-function">
-<h2>Incorporating a Synchronous Function<a class="headerlink" href="#incorporating-a-synchronous-function" title="Permalink to this heading">#</a></h2>
+<h2>Incorporating a Synchronous Function<a class="headerlink" href="#incorporating-a-synchronous-function" title="Link to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">async-graph-data-flow</span></code> is for asynchronous functions by design,
 but what if you need to run a <em>synchronous</em> function?
 Inside a node’s async function,
@@ -794,7 +795,7 @@ then call the synchronous function with this loop.</p>
 </div>
 </section>
 <section id="shared-state-across-asynchronous-functions">
-<h2>Shared State Across Asynchronous Functions<a class="headerlink" href="#shared-state-across-asynchronous-functions" title="Permalink to this heading">#</a></h2>
+<h2>Shared State Across Asynchronous Functions<a class="headerlink" href="#shared-state-across-asynchronous-functions" title="Link to this heading">#</a></h2>
 <p>Sharing state across the async functions is possible
 if you pass the same object around them.
 Such an object can be a custom class instance with methods and attributes as needed.</p>
@@ -868,14 +869,14 @@ Such an object can be a custom class instance with methods and attributes as nee
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="quickstart.html">
+          <a class="prev-page" href="technical.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Quickstart</div>
+                <div class="title">Technical Notes</div>
                 
               </div>
             </a>
@@ -883,7 +884,7 @@ Such an object can be a custom class instance with methods and attributes as nee
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2022 - 2023, Civis Analytics. Documentation last updated on 2023-06-20.
+                Copyright &#169; 2022 - 2023, Civis Analytics. Documentation last updated on 2023-11-30.
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -929,11 +930,11 @@ Such an object can be a custom class instance with methods and attributes as nee
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/scripts/furo.js"></script>
-    <script src="_static/clipboard.min.js"></script>
-    <script src="_static/copybutton.js"></script>
+</div><script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
     </body>
 </html>

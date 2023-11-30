@@ -70,16 +70,10 @@ Download and Install
 Usage
 -----
 
-Start with :ref:`quickstart`, and then get inspired by :ref:`more_examples`.
+Start with :ref:`quickstart`.
+To better understand how the library works, see :ref:`technical`.
+Then get inspired by and see what features are available from :ref:`more_examples`.
 Don't forget to check out the :ref:`api` as well.
-
-Under the Hood
---------------
-
-``async-graph-data-flow`` chains asynchronous functions together
-with a :class:`~asyncio.Queue` instance between two functions in the graph.
-A queue keeps track of the data items yielded from a source node and feeds them
-into its destination node.
 
 License
 -------
@@ -104,5 +98,6 @@ Table of Contents
    :maxdepth: 2
 
    quickstart
+   technical
    more_examples
    api

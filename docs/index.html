@@ -1,16 +1,16 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="./">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Quickstart" href="quickstart.html" />
 
-    <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
         <title>async-graph-data-flow documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
-    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
     
     
 
@@ -157,6 +157,7 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="technical.html">Technical Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="more_examples.html">More Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 </ul>
@@ -194,13 +195,13 @@
         </div>
         <article role="main">
           <section id="async-graph-data-flow">
-<span id="index"></span><h1>async-graph-data-flow<a class="headerlink" href="#async-graph-data-flow" title="Permalink to this heading">#</a></h1>
+<span id="index"></span><h1>async-graph-data-flow<a class="headerlink" href="#async-graph-data-flow" title="Link to this heading">#</a></h1>
 <a class="reference external image-reference" href="https://pypi.python.org/pypi/async-graph-data-flow"><img alt="PyPI version" src="https://badge.fury.io/py/async-graph-data-flow.svg" /></a>
 <a class="reference external image-reference" href="https://pypi.python.org/pypi/async-graph-data-flow"><img alt="Supported Python versions" src="https://img.shields.io/pypi/pyversions/async-graph-data-flow.svg" /></a>
 <p><code class="docutils literal notranslate"><span class="pre">async-graph-data-flow</span></code> is a Python library for executing asynchronous functions
 that pass data along a directed acyclic graph (DAG).</p>
 <section id="features">
-<h2>Features<a class="headerlink" href="#features" title="Permalink to this heading">#</a></h2>
+<h2>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><strong>Functions organized as a graph</strong> 🕸</p></li>
 </ul>
@@ -241,43 +242,44 @@ without those big guns.</p>
 <p>The library is built on top of <code class="docutils literal notranslate"><span class="pre">asyncio</span></code> from the Python standard library, with no third-party dependencies.</p>
 </section>
 <section id="download-and-install">
-<h2>Download and Install<a class="headerlink" href="#download-and-install" title="Permalink to this heading">#</a></h2>
+<h2>Download and Install<a class="headerlink" href="#download-and-install" title="Link to this heading">#</a></h2>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>async-graph-data-flow
 </pre></div>
 </div>
 </section>
 <section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">#</a></h2>
-<p>Start with <a class="reference internal" href="quickstart.html#quickstart"><span class="std std-ref">Quickstart</span></a>, and then get inspired by <a class="reference internal" href="more_examples.html#more-examples"><span class="std std-ref">More Examples</span></a>.
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h2>
+<p>Start with <a class="reference internal" href="quickstart.html#quickstart"><span class="std std-ref">Quickstart</span></a>.
+To better understand how the library works, see <a class="reference internal" href="technical.html#technical"><span class="std std-ref">Technical Notes</span></a>.
+Then get inspired by and see what features are available from <a class="reference internal" href="more_examples.html#more-examples"><span class="std std-ref">More Examples</span></a>.
 Don’t forget to check out the <a class="reference internal" href="api.html#api"><span class="std std-ref">API Reference</span></a> as well.</p>
 </section>
-<section id="under-the-hood">
-<h2>Under the Hood<a class="headerlink" href="#under-the-hood" title="Permalink to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">async-graph-data-flow</span></code> chains asynchronous functions together
-with a <a class="reference external" href="https://docs.python.org/3/library/asyncio-queue.html#asyncio.Queue" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Queue</span></code></a> instance between two functions in the graph.
-A queue keeps track of the data items yielded from a source node and feeds them
-into its destination node.</p>
-</section>
 <section id="license">
-<h2>License<a class="headerlink" href="#license" title="Permalink to this heading">#</a></h2>
+<h2>License<a class="headerlink" href="#license" title="Link to this heading">#</a></h2>
 <p>BSD 3-Clause License.</p>
 </section>
 <section id="links">
-<h2>Links<a class="headerlink" href="#links" title="Permalink to this heading">#</a></h2>
+<h2>Links<a class="headerlink" href="#links" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.civisanalytics.com/blog/open-source-software-release-introducing-async-graph-data-flow-a-python-library-for-efficient-data-pipelines/">Blog post</a> introducing this package</p></li>
 <li><p><a class="reference external" href="https://github.com/civisanalytics/async-graph-data-flow">Source code and bug tracker</a></p></li>
 </ul>
 </section>
 <section id="authors">
-<h2>Authors<a class="headerlink" href="#authors" title="Permalink to this heading">#</a></h2>
+<h2>Authors<a class="headerlink" href="#authors" title="Link to this heading">#</a></h2>
 <p>This library is authored by Samuel Asirifi, Gbolahan Okerayi, and Jackson Lee at Civis Analytics.</p>
 </section>
 <section id="table-of-contents">
-<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this heading">#</a></h2>
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="technical.html">Technical Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="technical.html#functions-arranged-as-a-graph">Functions Arranged as a Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="technical.html#tasks-and-queues">Tasks and Queues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="technical.html#example">Example</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="more_examples.html">More Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="more_examples.html#customizable-start-nodes">Customizable Start Nodes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="more_examples.html#graph-with-nodes-only-and-no-edges">Graph with Nodes only and No Edges</a></li>
@@ -319,7 +321,7 @@ into its destination node.</p>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2022 - 2023, Civis Analytics. Documentation last updated on 2023-06-20.
+                Copyright &#169; 2022 - 2023, Civis Analytics. Documentation last updated on 2023-11-30.
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -349,7 +351,6 @@ into its destination node.</p>
 <li><a class="reference internal" href="#features">Features</a></li>
 <li><a class="reference internal" href="#download-and-install">Download and Install</a></li>
 <li><a class="reference internal" href="#usage">Usage</a></li>
-<li><a class="reference internal" href="#under-the-hood">Under the Hood</a></li>
 <li><a class="reference internal" href="#license">License</a></li>
 <li><a class="reference internal" href="#links">Links</a></li>
 <li><a class="reference internal" href="#authors">Authors</a></li>
@@ -365,11 +366,11 @@ into its destination node.</p>
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/scripts/furo.js"></script>
-    <script src="_static/clipboard.min.js"></script>
-    <script src="_static/copybutton.js"></script>
+</div><script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
     </body>
 </html>
