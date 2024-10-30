@@ -21,6 +21,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Security
 
+## [1.5.0] - 2024-11-04
+
+### Added
+- Python 3.13 is officially supported and tested on CI. (#11)
+
+### Changed
+- Migrated the docs to the Read The Docs site. (#11)
+
 ## [1.4.0] - 2023-11-30
 
 ### Added
