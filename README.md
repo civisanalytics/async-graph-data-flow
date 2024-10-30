@@ -6,7 +6,7 @@
 
 ## Full Documentation
 
-Please visit https://civisanalytics.github.io/async-graph-data-flow
+Please visit https://async-graph-data-flow.readthedocs.io
 
 Please also check out this
 [blog post](https://www.civisanalytics.com/blog/open-source-software-release-introducing-async-graph-data-flow-a-python-library-for-efficient-data-pipelines/)
@@ -36,17 +36,18 @@ flake8 src tests examples
 black --check src tests examples
 ```
 
-## For Maintainers
+## Building Documentation
 
-To update the Sphinx documentation,
-the source files that need editing are under `docs/source/`;
-everything else under `docs/` is auto-generated.
-After the manual updates under `docs/source/` are ready,
-the HTML pages are updated as follows:
+We use the Sphinx framework. The documentation source files are in `docs/source/`.
+These files can be updated as necessary.
 
-```bash
-rm -r docs/_sources docs/_static && rm docs/*.html
+The public documentation is accessible at https://async-graph-data-flow.readthedocs.io.
+The doc build is configured by `.readthedocs.yaml`. 
+Normally, even when we need to update the documentation or make a new release of async-graph-data-flow,
+neither this configuration YAML file nor Civis's account on the Read the Docs site need any updates.
+The builds by the Read The Docs site generate the necessary files (the HTML pages and other things)
+for the public documentation. All these auto-generated files are explicitly not versioned (see `.gitignore`).
 
-# Run the following command *twice* -- certain HTML updates only show up after multiple `sphinx-build` runs.
-sphinx-build docs/source docs
-```
+To build the documentation locally (for testing and development),
+install the full doc-related dependencies: `pip install -r docs/requirements.txt`,
+then run `sphinx-build -b html docs/ docs/build/`.
