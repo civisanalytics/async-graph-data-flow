@@ -17,3 +17,6 @@ sphinx:
 python:
   install:
     - requirements: docs/requirements.txt
+    # Install the `async-graph-data-flow` package from the local directory.
+    - method: pip
+      path: .
