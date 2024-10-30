@@ -6,3 +6,4 @@
 .python-version
 .venv
 **/async_graph_data_flow.egg-info
+docs/build/

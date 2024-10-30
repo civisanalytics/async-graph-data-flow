@@ -106,7 +106,7 @@ class AsyncExecutor:
         node_filter: Iterable[str] | None = None,
         time_interval: int | None = None,
         logger: logging.Logger | None = None,
-    ):
+    ) -> None:
         """Turn on and configure data flow logging.
 
         For a long-running graph execution,
@@ -148,7 +148,7 @@ class AsyncExecutor:
         if logger and isinstance(logger, logging.Logger):
             self._logger = logger
 
-    def turn_off_data_flow_logging(self):
+    def turn_off_data_flow_logging(self) -> None:
         """Turn off data flow logging."""
         self._data_flow_logging = False
 
