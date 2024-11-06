@@ -39,6 +39,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = 'furo'
+numpydoc_class_members_toctree = False
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None)
