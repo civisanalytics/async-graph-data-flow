@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.5.1] - 2024-11-07
 
+### Added
+- Added static type checking using mypy. (#12)
+
 ### Fixed
 - Fixed documentation to actually show example code. (#12)
 

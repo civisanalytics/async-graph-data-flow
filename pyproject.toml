@@ -43,6 +43,7 @@ dev = [
     "black == 24.10.0",
     "flake8 == 7.1.1",
     "pytest == 8.3.3",
+    "mypy == 1.13.0",
 
     # Managing source distributions
     "build == 1.2.2",
