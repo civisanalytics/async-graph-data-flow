@@ -41,7 +41,7 @@ see the ``unpack_input`` parameter of :func:`~async_graph_data_flow.AsyncGraph.a
 
     START[ ] -.-> A
     B -.-> STOP[ ]
-    A["async def func2(...):\n&nbsp;&nbsp;&nbsp;&nbsp;...\n&nbsp;&nbsp;&nbsp;&nbsp;yield <strong>foo, bar</strong>"] --> B["async def func3(<strong>foo, bar</strong>):\n&nbsp;&nbsp;&nbsp;&nbsp;...\n&nbsp;&nbsp;&nbsp;&nbsp;yield ..."]
+    A["async def func2(...):<br/>&nbsp;&nbsp;&nbsp;&nbsp;...<br/>&nbsp;&nbsp;&nbsp;&nbsp;yield <strong>foo, bar</strong>"] --> B["async def func3(<strong>foo, bar</strong>):<br/>&nbsp;&nbsp;&nbsp;&nbsp;...<br/>&nbsp;&nbsp;&nbsp;&nbsp;yield ..."]
     style A text-align:left
     style B text-align:left
     style START fill-opacity:0, stroke-opacity:0;
@@ -83,12 +83,12 @@ available to process it.
     style start2 fill-opacity:0, stroke-opacity:0;
 
     subgraph node and its associated queue
-        queue3((queue)) --> node3[task 1, task 2,\ntask 3, ...]
+        queue3((queue)) --> node3[task 1, task 2,<br/>task 3, ...]
     end
 
-    node1 --> |yields\nitems| queue3
-    node2 --> |yields\nitems| queue3
-    node3 -.-> |yields\nitems| STOP[ ]
+    node1 --> |yield<br/>items| queue3
+    node2 --> |yields<br/>items| queue3
+    node3 -.-> |yields<br/>items| STOP[ ]
     style STOP  fill-opacity:0, stroke-opacity:0;
 
 Example
@@ -219,10 +219,10 @@ inputs from the items yielded by ``get_open_brewery_data()``.
 
     flowchart LR
 
-    Q(("Queue items:\n[{'col1': 'val1', ...}, ...]\n[{'col1': 'val1', ...}, ...]\n...\n"))
+    Q(("Queue items:<br/>[{'col1': 'val1', ...}, ...]<br/>[{'col1': 'val1', ...}, ...]<br/>...<br/>"))
     A[get_open_brewery_data]
     B[write_to_csv]
-    A --> |yields\nitems| Q
+    A --> |yields<br/>items| Q
     Q --> B
 
 ``get_open_brewery_data()`` yields a page of the Open Brewery DB data,

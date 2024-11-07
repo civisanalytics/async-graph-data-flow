@@ -3,9 +3,6 @@ from collections import OrderedDict
 from typing import Any, Callable, NamedTuple
 
 
-_DEFAULT_NUM_OF_WORKERS = 1
-
-
 class InvalidAsyncGraphError(Exception):
     pass
 

@@ -22,11 +22,11 @@ To override this default behavior,
 use the keyword argument ``start_nodes`` at :func:`~async_graph_data_flow.AsyncExecutor.execute`
 to select which nodes to execute instead and/or supply the arguments to whichever nodes you've selected.
 
-.. literalinclude:: ../../examples/custom_start_nodes.py
+.. literalinclude:: ../examples/custom_start_nodes.py
    :language: python
    :emphasize-lines: 34
 
-.. literalinclude:: ../../examples/custom_start_node_args.py
+.. literalinclude:: ../examples/custom_start_node_args.py
    :language: python
    :emphasize-lines: 34
 
@@ -41,7 +41,7 @@ and therefore all nodes will execute concurrently upon graph execution.
 The start nodes and their arguments at the beginning of the graph execution are available at
 :attr:`~async_graph_data_flow.AsyncExecutor.start_nodes` of :func:`~async_graph_data_flow.AsyncExecutor.execute`.
 
-.. literalinclude:: ../../examples/graph_with_no_edges.py
+.. literalinclude:: ../examples/graph_with_no_edges.py
    :language: python
    :emphasize-lines: 30,39,48
 
@@ -63,7 +63,7 @@ An :class:`~async_graph_data_flow.AsyncExecutor` instance has
 the method :func:`~async_graph_data_flow.AsyncExecutor.turn_on_data_flow_logging`,
 which you can call to turn on and configure logging.
 
-.. literalinclude:: ../../examples/data_flow_logging.py
+.. literalinclude:: ../examples/data_flow_logging.py
    :language: python
    :emphasize-lines: 36-38
 
@@ -74,7 +74,7 @@ By default, each node creates one task at a time.
 To spawn multiple, concurrent tasks from a node,
 set ``max_tasks`` at :func:`~async_graph_data_flow.AsyncGraph.add_node`.
 
-.. literalinclude:: ../../examples/concurrent_tasks_per_node.py
+.. literalinclude:: ../examples/concurrent_tasks_per_node.py
    :language: python
    :emphasize-lines: 25
 
@@ -89,11 +89,11 @@ This behavior can be altered in two different ways:
 * To halt execution at any node, set ``halt_on_exception`` to ``True`` when initializing an :class:`~async_graph_data_flow.AsyncGraph` instance.
 * To halt execution at a specific node, set ``halt_on_exception`` to ``True`` when using :func:`~async_graph_data_flow.AsyncGraph.add_node`  to add the node in question to the graph.
 
-.. literalinclude:: ../../examples/halt_on_exception_at_a_specific_node.py
+.. literalinclude:: ../examples/halt_on_exception_at_a_specific_node.py
    :language: python
    :emphasize-lines: 39
 
-.. literalinclude:: ../../examples/halt_on_exception_at_any_node.py
+.. literalinclude:: ../examples/halt_on_exception_at_any_node.py
    :language: python
    :emphasize-lines: 36
 
@@ -108,7 +108,7 @@ allows access to the exceptions from the nodes,
 and you can determine what to do with this information
 (e.g., raise an exception on your own).
 
-.. literalinclude:: ../../examples/raising_an_exception.py
+.. literalinclude:: ../examples/raising_an_exception.py
    :language: python
    :emphasize-lines: 24-27
 
@@ -121,7 +121,7 @@ Inside a node's async function,
 you may grab the asyncio's running loop,
 then call the synchronous function with this loop.
 
-.. literalinclude:: ../../examples/external_sync_call.py
+.. literalinclude:: ../examples/external_sync_call.py
    :language: python
    :emphasize-lines: 27,29
 
@@ -132,6 +132,6 @@ Sharing state across the async functions is possible
 if you pass the same object around them.
 Such an object can be a custom class instance with methods and attributes as needed.
 
-.. literalinclude:: ../../examples/shared_state.py
+.. literalinclude:: ../examples/shared_state.py
    :language: python
    :emphasize-lines: 21,23,27,30,34,44,45

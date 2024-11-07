@@ -20,7 +20,7 @@ class AsyncExecutor:
         self,
         graph: AsyncGraph,
         *,
-        logger: logging.Logger = None,
+        logger: logging.Logger | None = None,
         max_exceptions: int = 1_000,
     ):
         """Initialize an executor.
@@ -41,23 +41,23 @@ class AsyncExecutor:
         if not isinstance(self._graph, AsyncGraph):
             raise TypeError(f"{self._graph} must be an AsyncGraph instance")
 
-        self._node_queues = {}
-        self._consumer_tasks = {}
+        self._node_queues: dict[str, asyncio.Queue] = {}
+        self._consumer_tasks: dict[str, asyncio.Task] = {}
         self._halt_pipeline_execution = False
         self._logger = logger if logger else _LOG
         self._max_exceptions = max_exceptions
 
-        self._data_flow_stats = None
+        self._data_flow_stats: dict[str, dict[str, int]] | None = None
         self._data_flow_logging_lock = asyncio.Lock()
         self._data_flow_logging = False
         self._data_flow_logging_node_format = _DEFAULT_DATA_FLOW_LOGGING_NODE_FORMAT
         self._data_flow_logging_time_interval = _DEFAULT_DATA_FLOW_LOGGING_TIME_INTERVAL
-        self._data_flow_logging_node_filter = self._graph._nodes.keys()
-        self._data_flow_logging_last_timestamp = 0
+        self._data_flow_logging_node_filter: Iterable[str] = self._graph._nodes.keys()
+        self._data_flow_logging_last_timestamp = 0.0
 
-        self._start_node_args = None
+        self._start_node_args: dict[str, tuple] | None = None
 
-        self._exceptions = None
+        self._exceptions: dict[str, deque[Exception]] | None = None
 
     @property
     def graph(self) -> AsyncGraph:
@@ -72,7 +72,7 @@ class AsyncExecutor:
         raised from the node.
         """
         if self._exceptions is None:
-            return
+            return None
         from_deque_to_list = {}
         for node_name, excs in self._exceptions.items():
             # `excs` is a deque. Turning it into a list for user-friendliness.
@@ -152,7 +152,7 @@ class AsyncExecutor:
         """Turn off data flow logging."""
         self._data_flow_logging = False
 
-    async def _log_data_flow_nodes(self):
+    def _log_data_flow_nodes(self):
         for node, flow in self._data_flow_stats.items():
             if (
                 self._data_flow_logging_node_filter
@@ -186,7 +186,7 @@ class AsyncExecutor:
                             current_timestamp - self._data_flow_logging_last_timestamp
                             > self._data_flow_logging_time_interval
                         ):
-                            await self._log_data_flow_nodes()
+                            self._log_data_flow_nodes()
                             self._data_flow_logging_last_timestamp = current_timestamp
 
                 queue = self._node_queues[node_name]
@@ -202,17 +202,17 @@ class AsyncExecutor:
                 try:
                     if len(params) == 0:
                         coro = node.func()
-                    elif node.unpack_input and (
-                        (is_tuple := isinstance(data, tuple)) or isinstance(data, dict)
-                    ):
-                        coro = node.func(*data) if is_tuple else node.func(**data)
+                    elif node.unpack_input and isinstance(data, tuple):
+                        coro = node.func(*data)
+                    elif node.unpack_input and isinstance(data, dict):
+                        coro = node.func(**data)
                     else:
                         coro = node.func(data)
                 except asyncio.CancelledError:
                     continue
                 except Exception as exc:
-                    await self._update_data_flow_error_stats(node_name)
-                    await self._update_exceptions(node_name, exc)
+                    self._update_data_flow_error_stats(node_name)
+                    self._update_exceptions(node_name, exc)
                     self._logger.error(traceback.format_exc())
                     if self._graph.halt_on_exception or node.halt_on_exception:
                         self._logger.error(
@@ -238,8 +238,8 @@ class AsyncExecutor:
                     except asyncio.CancelledError:
                         break
                     except Exception as exc:
-                        await self._update_data_flow_error_stats(node_name)
-                        await self._update_exceptions(node_name, exc)
+                        self._update_data_flow_error_stats(node_name)
+                        self._update_exceptions(node_name, exc)
                         self._logger.error(traceback.format_exc())
                         if self._graph.halt_on_exception or node.halt_on_exception:
                             # close current agen
@@ -255,27 +255,33 @@ class AsyncExecutor:
                             continue
                     else:
                         node_edges = self._graph._nodes_to_edges[node_name]
-                        await self._update_data_flow_in_out_stats(node_name, node_edges)
+                        self._update_data_flow_in_out_stats(node_name, node_edges)
                         await self._add_to_node_queue(node_edges, next_data_item)
 
                 queue.task_done()
             except asyncio.CancelledError:
                 break
 
-    async def _update_data_flow_in_out_stats(self, in_node: str, out_nodes: set[str]):
+    def _update_data_flow_in_out_stats(self, in_node: str, out_nodes: set[str]):
+        if self._data_flow_stats is None:
+            return None
         self._data_flow_stats[in_node]["out"] += 1
         for node in out_nodes:
             self._data_flow_stats[node]["in"] += 1
 
-    async def _update_data_flow_error_stats(self, node: str):
+    def _update_data_flow_error_stats(self, node: str):
+        if self._data_flow_stats is None:
+            return None
         self._data_flow_stats[node]["err"] += 1
 
-    async def _update_exceptions(self, node: str, exc: Exception):
+    def _update_exceptions(self, node: str, exc: Exception):
+        if self._exceptions is None:
+            return None
         self._exceptions[node].append(exc)
 
     async def _pipeline_execution(self):
-        self._data_flow_stats: dict[str, dict[str, int]] = {}
-        self._exceptions: dict[str, deque[Exception]] = {}
+        self._data_flow_stats = {}
+        self._exceptions = {}
 
         for node_name, node in self._graph._nodes.items():
             queue = asyncio.Queue(maxsize=node.queue_size)
@@ -299,7 +305,7 @@ class AsyncExecutor:
         await asyncio.gather(*self._consumer_tasks.values())
 
         if self._data_flow_logging:
-            await self._log_data_flow_nodes()
+            self._log_data_flow_nodes()
 
     def _get_start_node_args(self, start_node_args) -> dict[str, tuple]:
         if start_node_args is None:
@@ -313,7 +319,7 @@ class AsyncExecutor:
                 raise TypeError(f"args for the node '{node}' isn't a tuple: {args}")
         return start_node_args
 
-    def execute(self, start_nodes: dict[str, tuple] = None) -> None:
+    def execute(self, start_nodes: dict[str, tuple] | None = None) -> None:
         """Start executing the functions along the graph.
 
         Parameters

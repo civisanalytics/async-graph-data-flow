@@ -76,6 +76,11 @@ workflows:
             pip install ".[dev]" && \
             black --check src tests examples
       - pre-build:
+          name: mypy
+          command-run:  |
+            pip install ".[dev]" && \
+            mypy src
+      - pre-build:
           name: twine
           command-run: |
             pip install ".[dev]" && \
@@ -92,6 +97,7 @@ workflows:
           requires:
             - flake8
             - black
+            - mypy
             - twine
             - bandit
           matrix:
@@ -101,5 +107,6 @@ workflows:
           requires:
             - flake8
             - black
+            - mypy
             - twine
             - bandit

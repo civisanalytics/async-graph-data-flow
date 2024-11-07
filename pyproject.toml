@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "async-graph-data-flow"
-version = "1.5.0"
+version = "1.5.1"
 description = "Asynchronous functions that pass data along a directed acyclic graph"
 readme = "README.md"
 requires-python = ">= 3.10"
@@ -43,6 +43,7 @@ dev = [
     "black == 24.10.0",
     "flake8 == 7.1.1",
     "pytest == 8.3.3",
+    "mypy == 1.13.0",
 
     # Managing source distributions
     "build == 1.2.2",
