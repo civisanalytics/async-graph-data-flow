@@ -1,4 +1,3 @@
-import asyncio
 import inspect
 from collections import OrderedDict
 from collections.abc import AsyncGenerator, Callable
@@ -41,7 +40,7 @@ class AsyncGraph:
         halt_on_exception: bool = False,
         unpack_input: bool = True,
         max_tasks: int = 1,
-        queue_class: type = asyncio.Queue,
+        queue_class: type | None = None,
         queue_size: int = 10_000,
         check_async_gen: bool = True,
     ) -> None:
@@ -68,7 +67,11 @@ class AsyncGraph:
             The number of tasks that this node runs concurrently.
         queue_class : type, optional
             The class of the queue object to use. It must be a subclass of
-            :class:`~asyncio.Queue`. Defaults to :class:`~asyncio.Queue`.
+            :class:`~asyncio.Queue`, or an object whose ``__call__`` call gives
+            an object that subclasses from :class:`~asyncio.Queue`.
+            If ``None`` or not given,
+            it defaults to :class:`~asyncio.Queue`.
+            When used, ``queue_size`` is ignored.
         queue_size : int, optional
             The maximum number of data items allowed to be
             in the queue object between this node as a destination node
@@ -136,8 +139,6 @@ class AsyncGraph:
             raise TypeError(f"node '{name}' isn't an async generator function")
         if name in self._nodes:
             raise ValueError(f"node '{name}' already exists in the graph")
-        if not issubclass(queue_class, asyncio.Queue):
-            raise TypeError("queue_class must be a subclass of asyncio.Queue")
         self._nodes[name] = _Node(
             func=func,
             name=name,

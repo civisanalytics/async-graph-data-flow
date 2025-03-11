@@ -1,4 +1,3 @@
-import asyncio
 import inspect
 from unittest import mock
 
@@ -85,7 +84,7 @@ class TestAsyncGraphAddNode:
                 "halt_on_exception": False,
                 "max_tasks": 1,
                 "name": "extract_node",
-                "queue_class": asyncio.Queue,
+                "queue_class": None,
                 "queue_size": 10_000,
                 "unpack_input": True,
             },
@@ -94,7 +93,7 @@ class TestAsyncGraphAddNode:
                 "halt_on_exception": False,
                 "max_tasks": 1,
                 "name": "transform_node",
-                "queue_class": asyncio.Queue,
+                "queue_class": None,
                 "queue_size": 10_000,
                 "unpack_input": True,
             },
@@ -103,7 +102,7 @@ class TestAsyncGraphAddNode:
                 "halt_on_exception": False,
                 "max_tasks": 1,
                 "name": "load_node",
-                "queue_class": asyncio.Queue,
+                "queue_class": None,
                 "queue_size": 10_000,
                 "unpack_input": True,
             },
