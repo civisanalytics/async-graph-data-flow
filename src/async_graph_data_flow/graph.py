@@ -1,6 +1,8 @@
+import asyncio
 import inspect
 from collections import OrderedDict
-from typing import Any, Callable, NamedTuple
+from collections.abc import AsyncGenerator, Callable
+from typing import Any, NamedTuple
 
 
 class InvalidAsyncGraphError(Exception):
@@ -8,8 +10,9 @@ class InvalidAsyncGraphError(Exception):
 
 
 class _Node(NamedTuple):
-    func: Callable
+    func: Callable[..., AsyncGenerator]
     name: str
+    queue_class: type
     queue_size: int
     max_tasks: int
     halt_on_exception: bool
@@ -32,12 +35,13 @@ class AsyncGraph:
 
     def add_node(
         self,
-        func: Callable,
+        func: Callable[..., AsyncGenerator],
         *,
         name: str | None = None,
         halt_on_exception: bool = False,
         unpack_input: bool = True,
         max_tasks: int = 1,
+        queue_class: type = asyncio.Queue,
         queue_size: int = 10_000,
         check_async_gen: bool = True,
     ) -> None:
@@ -45,8 +49,8 @@ class AsyncGraph:
 
         Parameters
         ----------
-        func : Callable
-            The function that this node runs.
+        func : Callable[..., AsyncGenerator]
+            The asynchronous generator function that this node runs.
             See notes below for the function's requirements.
         name : str, optional
             The name of this node. If not provided, the ``__name__`` attribute
@@ -62,10 +66,13 @@ class AsyncGraph:
             See notes below for more details.
         max_tasks : int, optional
             The number of tasks that this node runs concurrently.
+        queue_class : type, optional
+            The class of the queue object to use. It must be a subclass of
+            :class:`~asyncio.Queue`. Defaults to :class:`~asyncio.Queue`.
         queue_size : int, optional
             The maximum number of data items allowed to be
-            in the :class:`~asyncio.Queue` object between this node as a source
-            and its destination node(s).
+            in the queue object between this node as a destination node
+            and its source node(s).
         check_async_gen : bool, optional
             If ``True`` (the default), the callable ``func`` is verified to be an async
             generator function by :func:`inspect.isasyncgenfunction`.
@@ -129,9 +136,12 @@ class AsyncGraph:
             raise TypeError(f"node '{name}' isn't an async generator function")
         if name in self._nodes:
             raise ValueError(f"node '{name}' already exists in the graph")
+        if not issubclass(queue_class, asyncio.Queue):
+            raise TypeError("queue_class must be a subclass of asyncio.Queue")
         self._nodes[name] = _Node(
             func=func,
             name=name,
+            queue_class=queue_class,
             queue_size=queue_size,
             max_tasks=max_tasks,
             halt_on_exception=halt_on_exception,
@@ -139,14 +149,18 @@ class AsyncGraph:
         )
         self._nodes_to_edges[name] = set()
 
-    def add_edge(self, src_node: str | Callable, dst_node: str | Callable) -> None:
+    def add_edge(
+        self,
+        src_node: str | Callable[..., AsyncGenerator],
+        dst_node: str | Callable[..., AsyncGenerator],
+    ) -> None:
         """Add an edge.
 
         Parameters
         ----------
-        src_node : str | Callable
+        src_node : str | Callable[..., AsyncGenerator]
             The source node, either the function name or the function itself.
-        dst_node : str | Callable
+        dst_node : str | Callable[..., AsyncGenerator]
             The destination node, either the function name or the function itself.
         """
         if not isinstance(src_node, str):
