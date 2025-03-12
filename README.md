@@ -38,7 +38,7 @@ black --check src tests examples
 
 ## Building Documentation
 
-We use the Sphinx framework. The documentation source files are in `docs/source/`.
+We use the Sphinx framework. The documentation source files are in `docs/`.
 These files can be updated as necessary.
 
 The public documentation is accessible at https://async-graph-data-flow.readthedocs.io.
