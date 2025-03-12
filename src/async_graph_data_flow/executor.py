@@ -285,10 +285,10 @@ class AsyncExecutor:
         self._exceptions = {}
 
         for node_name, node in self._graph._nodes.items():
-            if node.queue_class is None:
+            if node.queue is None:
                 queue = asyncio.Queue(maxsize=node.queue_size)
             else:
-                queue = node.queue_class()
+                queue = node.queue
             self._node_queues[node_name] = queue
             self._data_flow_stats[node_name] = {"in": 0, "out": 0, "err": 0}
             self._exceptions[node_name] = deque(maxlen=self._max_exceptions)

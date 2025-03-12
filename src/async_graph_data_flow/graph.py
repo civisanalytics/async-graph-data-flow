@@ -1,3 +1,4 @@
+import asyncio
 import inspect
 from collections import OrderedDict
 from collections.abc import AsyncGenerator, Callable
@@ -11,7 +12,7 @@ class InvalidAsyncGraphError(Exception):
 class _Node(NamedTuple):
     func: Callable[..., AsyncGenerator]
     name: str
-    queue_class: type
+    queue: type[asyncio.Queue] | None
     queue_size: int
     max_tasks: int
     halt_on_exception: bool
@@ -40,7 +41,7 @@ class AsyncGraph:
         halt_on_exception: bool = False,
         unpack_input: bool = True,
         max_tasks: int = 1,
-        queue_class: type | None = None,
+        queue: type[asyncio.Queue] | None = None,
         queue_size: int = 10_000,
         check_async_gen: bool = True,
     ) -> None:
@@ -65,17 +66,22 @@ class AsyncGraph:
             See notes below for more details.
         max_tasks : int, optional
             The number of tasks that this node runs concurrently.
-        queue_class : type, optional
-            The class of the queue object to use. It must be a subclass of
-            :class:`~asyncio.Queue`, or an object whose ``__call__`` call gives
-            an object that subclasses from :class:`~asyncio.Queue`.
-            If ``None`` or not given,
-            it defaults to :class:`~asyncio.Queue`.
-            When used, ``queue_size`` is ignored.
+        queue : type[asyncio.Queue], optional
+            The queue object that is going to collect items from this node's
+            source nodes, via ``await queue.put(item)``, and then feed into this node
+            with items retrieved by ``await queue.get()``.
+            The queue object must be a subclass of :class:`~asyncio.Queue`.
+            If ``None`` or not given, it defaults to an ``asyncio.Queue()`` with max
+            size set by ``queue_size``.
         queue_size : int, optional
             The maximum number of data items allowed to be
             in the queue object between this node as a destination node
             and its source node(s).
+
+            .. deprecated:: 1.6.0
+                The argument ``queue_size`` is deprecated and will be removed in
+                v2.0.0. To configure the queue size, please use the argument ``queue``
+                for a queue object whose queue size is set.
         check_async_gen : bool, optional
             If ``True`` (the default), the callable ``func`` is verified to be an async
             generator function by :func:`inspect.isasyncgenfunction`.
@@ -139,10 +145,12 @@ class AsyncGraph:
             raise TypeError(f"node '{name}' isn't an async generator function")
         if name in self._nodes:
             raise ValueError(f"node '{name}' already exists in the graph")
+        if queue is not None and not issubclass(queue, asyncio.Queue):
+            raise TypeError(f"queue must be a subclass of asyncio.Queue: {queue}")
         self._nodes[name] = _Node(
             func=func,
             name=name,
-            queue_class=queue_class,
+            queue=queue,
             queue_size=queue_size,
             max_tasks=max_tasks,
             halt_on_exception=halt_on_exception,
