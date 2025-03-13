@@ -84,7 +84,7 @@ available to process it.
         queue3((queue)) --> node3[task 1, task 2,<br/>task 3, ...]
     end
 
-    node1 --> |yield<br/>items| queue3
+    node1 --> |yields<br/>items| queue3
     node2 --> |yields<br/>items| queue3
     node3 -.-> |yields<br/>items| STOP[ ]
     style STOP  fill-opacity:0, stroke-opacity:0;
