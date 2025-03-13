@@ -15,6 +15,7 @@ for discussion.
 .. toctree::
    :maxdepth: 1
 
+   more_examples/flexible_edge_behaviors_between_nodes
    more_examples/customizable_start_nodes
    more_examples/graph_with_nodes_only_and_no_edges
    more_examples/data_flow_statistics_and_logging

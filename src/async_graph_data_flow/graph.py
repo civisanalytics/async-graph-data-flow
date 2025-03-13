@@ -67,10 +67,11 @@ class AsyncGraph:
         max_tasks : int, optional
             The number of tasks that this node runs concurrently.
         queue : type[asyncio.Queue], optional
-            The queue object that is going to collect items from this node's
-            source nodes, via ``await queue.put(item)``, and then feed into this node
+            The queue object that collects items from this node's source nodes,
+            via ``await queue.put(item)``, and then feed into this node
             with items retrieved by ``await queue.get()``.
-            The queue object must be a subclass of :class:`~asyncio.Queue`.
+            This queue object must be an instance of either :class:`~asyncio.Queue` or
+            a subclass of :class:`~asyncio.Queue`.
             If ``None`` or not given, it defaults to an ``asyncio.Queue()`` with max
             size set by ``queue_size``.
         queue_size : int, optional
@@ -145,8 +146,8 @@ class AsyncGraph:
             raise TypeError(f"node '{name}' isn't an async generator function")
         if name in self._nodes:
             raise ValueError(f"node '{name}' already exists in the graph")
-        if queue is not None and not issubclass(queue, asyncio.Queue):
-            raise TypeError(f"queue must be a subclass of asyncio.Queue: {queue}")
+        if queue is not None and not isinstance(queue, asyncio.Queue):
+            raise TypeError(f"queue must be an instance of asyncio.Queue: {queue}")
         self._nodes[name] = _Node(
             func=func,
             name=name,
