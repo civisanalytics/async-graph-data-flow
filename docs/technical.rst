@@ -47,6 +47,8 @@ see the ``unpack_input`` parameter of :func:`~async_graph_data_flow.AsyncGraph.a
     style START fill-opacity:0, stroke-opacity:0;
     style STOP  fill-opacity:0, stroke-opacity:0;
 
+.. _tasks_and_queues:
+
 Tasks and Queues
 ----------------
 
@@ -81,7 +83,7 @@ available to process it.
     style start2 fill-opacity:0, stroke-opacity:0;
 
     subgraph node and its associated queue
-        queue3((queue)) --> node3[task 1, task 2,<br/>task 3, ...]
+        queue3((queue)) --> node3[task 1, task 2,<br/>task 3, ...<br/>based on the async<br/>gen function]
     end
 
     node1 --> |yields<br/>items| queue3
