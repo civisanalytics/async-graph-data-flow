@@ -17,6 +17,8 @@ class BatchQueue(asyncio.Queue):
         # This custom queue class assumes the use of an EndOfData marker
         # to indicate the end of the data stream.
         if isinstance(item, EndOfData):
+            # No more data is expected, so flush the last batch
+            # if it's not empty and regardless of its size.
             if self.batch:
                 await super().put(self.batch)
             # Don't forget to pass along the EndOfData marker.

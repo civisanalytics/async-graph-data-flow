@@ -27,7 +27,7 @@ A custom queue object can result in a variety of edge behaviors between nodes:
     call ``await queue.put(item)`` as desired to pre-load the queue with data items,
     then pass this queue object to the ``queue`` parameter of the destination node
     at :func:`~async_graph_data_flow.AsyncGraph.add_node`.
-* Do something with the data after it's received from a source node and before it's fed to the destination node:
+* Do something with the data after it is received from a source node and before it is fed to the destination node:
     If you would like to transform the data or perform any other operation on it,
     your custom queue likely comes from a subclass of :class:`asyncio.Queue`
     where you override the ``get`` and/or ``put`` methods,
@@ -73,13 +73,12 @@ Perhaps the most common use case for batching is to group data items into batche
 
 .. literalinclude:: ../../examples/batching_by_batch_size.py
    :language: python
-   :emphasize-lines: 6, 10, 49
+   :emphasize-lines: 6, 10, 39, 51
 
-Using the same ``BatchQueue`` and ``EndOfData`` defined here,
+Using the same ``BatchQueue`` and ``EndOfData`` defined above,
 it's also possible to have the effect of waiting for all data items
 from the source nodes before feeding them to the destination node,
-by setting the batch size to ``float('inf')`` (infinity, for no batch size limit)
---- this is an actual use case in production code maintained by the package developers.
+by setting the batch size to ``float('inf')`` (infinity, for no batch size limit).
 
 Beyond batch size, batching can be controlled by other criteria using your own custom queue class,
 such as special data items or markers (in a way, the ``EndOfData`` marker above is an example),
@@ -132,4 +131,4 @@ before feeding it to the destination node. For example:
 
 .. literalinclude:: ../../examples/combine_data_from_multiple_source_nodes.py
    :language: python
-   :emphasize-lines: 7, 72
+   :emphasize-lines: 7, 44, 51, 58, 72
