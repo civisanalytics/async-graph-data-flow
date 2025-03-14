@@ -68,6 +68,8 @@ Perhaps the most common use case for batching is to group data items into batche
     style queue2 fill:#ffccff, stroke:#030303, stroke-width:2px;
 
     node1 --> |yields<br/>1, 2, 3, ..., 10| queue2
+    node2 -.-> STOP[ ]
+    style STOP fill-opacity:0, stroke-opacity:0;
 
 .. literalinclude:: ../../examples/batching_by_batch_size.py
    :language: python
@@ -124,6 +126,8 @@ before feeding it to the destination node. For example:
     node1 --> |yields<br/>3, 3, 3| queue4
     node2 --> |yields<br/>4, 4, 4, 4| queue4
     node3 --> |yields<br/>5, 5, 5, 5, 5| queue4
+    node4 -.-> STOP[ ]
+    style STOP fill-opacity:0, stroke-opacity:0;
 
 
 .. literalinclude:: ../../examples/combine_data_from_multiple_source_nodes.py

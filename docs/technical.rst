@@ -89,7 +89,7 @@ available to process it.
     node1 --> |yields<br/>items| queue3
     node2 --> |yields<br/>items| queue3
     node3 -.-> |yields<br/>items| STOP[ ]
-    style STOP  fill-opacity:0, stroke-opacity:0;
+    style STOP fill-opacity:0, stroke-opacity:0;
 
 While the default queue of a node doesn't process the data after receiving it
 from the source nodes and before feeding it to the tasks of the destination node,
