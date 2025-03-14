@@ -19,6 +19,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Security
 
+## [1.6.0] - 2025-03-19
+
+### Added
+- Added support for custom edge behaviors, through the new `queue` argument at `add_node`
+  for a custom queue object. (#14)
+
+### Deprecated
+- Deprecated the `queue_size` argument at `add_node` -- use the new `queue` instead. (#14)
+
+### Security
+- Resolved CVE-2024-56326, CVE-2024-56201, and CVE-2025-27516
+  by updating jinja2 to v3.1.6 in requirements for Sphinx docs. (#14)
+
 ## [1.5.1] - 2024-11-07
 
 ### Added
