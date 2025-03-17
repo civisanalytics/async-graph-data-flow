@@ -12,7 +12,7 @@ class InvalidAsyncGraphError(Exception):
 class _Node(NamedTuple):
     func: Callable[..., AsyncGenerator]
     name: str
-    queue: type[asyncio.Queue] | None
+    queue: asyncio.Queue | None
     queue_size: int
     max_tasks: int
     halt_on_exception: bool
@@ -41,7 +41,7 @@ class AsyncGraph:
         halt_on_exception: bool = False,
         unpack_input: bool = True,
         max_tasks: int = 1,
-        queue: type[asyncio.Queue] | None = None,
+        queue: asyncio.Queue | None = None,
         queue_size: int = 10_000,
         check_async_gen: bool = True,
     ) -> None:
@@ -66,7 +66,7 @@ class AsyncGraph:
             See notes below for more details.
         max_tasks : int, optional
             The number of tasks that this node runs concurrently.
-        queue : type[asyncio.Queue], optional
+        queue : asyncio.Queue, optional
             The queue object that collects items from this node's source nodes,
             via ``await queue.put(item)``, and then feed into this node
             with items retrieved by ``await queue.get()``.
