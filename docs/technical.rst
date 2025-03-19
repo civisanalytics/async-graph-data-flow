@@ -47,6 +47,8 @@ see the ``unpack_input`` parameter of :func:`~async_graph_data_flow.AsyncGraph.a
     style START fill-opacity:0, stroke-opacity:0;
     style STOP  fill-opacity:0, stroke-opacity:0;
 
+.. _tasks_and_queues:
+
 Tasks and Queues
 ----------------
 
@@ -55,11 +57,9 @@ as one or more :class:`tasks<asyncio.Task>` in the event loop.
 The number of tasks for a given node is controlled by
 the ``max_tasks`` parameter that can be set at :func:`~async_graph_data_flow.AsyncGraph.add_node`.
 
-A node is associated with a :class:`Queue<asyncio.Queue>` instance
+By default, a node is associated with an :class:`asyncio.Queue` instance
 responsible for providing the items to the tasks of the node.
 The queue receives its items as the source nodes yield them.
-The maximum number of items a queue can hold is specified by ``queue_size``
-at :func:`~async_graph_data_flow.AsyncGraph.add_node`.
 The queue is first-in-first-out, which means that
 it keeps track of the items yielded from the tasks of the source nodes
 and feeds them one by one in the order by which the queue has received them.
@@ -83,13 +83,19 @@ available to process it.
     style start2 fill-opacity:0, stroke-opacity:0;
 
     subgraph node and its associated queue
-        queue3((queue)) --> node3[task 1, task 2,<br/>task 3, ...]
+        queue3((queue)) --> node3[task 1, task 2,<br/>task 3, ...<br/>based on the async<br/>gen function]
     end
 
-    node1 --> |yield<br/>items| queue3
+    node1 --> |yields<br/>items| queue3
     node2 --> |yields<br/>items| queue3
     node3 -.-> |yields<br/>items| STOP[ ]
-    style STOP  fill-opacity:0, stroke-opacity:0;
+    style STOP fill-opacity:0, stroke-opacity:0;
+
+While the default queue of a node doesn't process the data after receiving it
+from the source nodes and before feeding it to the tasks of the destination node,
+you can customize the queue behavior by passing in a custom queue object
+to the ``queue`` parameter of :func:`~async_graph_data_flow.AsyncGraph.add_node`,
+see :ref:`flexible_edge_behaviors_between_nodes`.
 
 Example
 -------

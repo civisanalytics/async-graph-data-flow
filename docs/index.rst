@@ -32,6 +32,11 @@ Each node yields data to its destination nodes.
 It's like how champagne flows along a champagne tower.
 Graph execution continues as long as there's still data between two connected nodes.
 
+* **Flexible edge behaviors between nodes** 🔄
+
+After data is yielded from a source node and before it's received by a destination node,
+you can choose to transform the data or perform any other operation on it.
+
 * **Customizable start nodes** 🧨
 
 By default, graph execution begins with nodes that have no incoming nodes,
