@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 ### Changed
+- Migrated from CircleCI to GitHub Actions for builds and releases. (#16)
 
 ### Deprecated
 
