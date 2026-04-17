@@ -20,20 +20,21 @@ BSD 3-Clause License. Please see `LICENSE.txt` in the GitHub source code for det
 
 The latest code under development is available on GitHub at
 https://github.com/civisanalytics/async-graph-data-flow.
-To obtain this version for experimental features or for development:
+To obtain this version for experimental features or for development,
+we recommend using [uv](https://docs.astral.sh/uv/) to manage the development environment:
 
 ```bash
 git clone https://github.com/civisanalytics/async-graph-data-flow.git
 cd async-graph-data-flow
-pip install -e ".[dev]"
+uv pip install -e ".[dev]"
 ```
 
 To run tests and styling checks:
 
 ```bash
-pytest
-flake8 src tests examples
-black --check src tests examples
+uv run pytest
+uv run flake8 src tests examples
+uv run black --check src tests examples
 ```
 
 ## Building Documentation
@@ -49,5 +50,5 @@ The builds by the Read The Docs site generate the necessary files (the HTML page
 for the public documentation. All these auto-generated files are explicitly not versioned (see `.gitignore`).
 
 To build the documentation locally (for testing and development),
-install the full doc-related dependencies: `pip install -r docs/requirements.txt`,
-then run `sphinx-build -b html docs/ docs/build/`.
+install the full doc-related dependencies: `uv pip install -r docs/requirements.txt`,
+then run `uv run sphinx-build -b html docs/ docs/build/`.

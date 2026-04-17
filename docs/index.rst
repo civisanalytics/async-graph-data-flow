@@ -8,6 +8,13 @@
 async-graph-data-flow
 =====================
 
+.. meta::
+   :description:
+        async-graph-data-flow: Data flow along a directed acyclic graph of asynchronous generator functions
+   :keywords:
+        asyncio, asynchronous programming, dag, directed acyclic graph,
+        asynchronous generator functions
+
 .. image:: https://badge.fury.io/py/async-graph-data-flow.svg
    :target: https://pypi.python.org/pypi/async-graph-data-flow
    :alt: PyPI version

@@ -75,8 +75,11 @@ If you would like to help avoid wasting free Internet resources
 (every push of new commits to an open pull request triggers new CI builds),
 you can run pytest/flake8/black checks locally before pushing commits:
 
+We recommend using [uv](https://docs.astral.sh/uv/) to manage the development environment
+(see the [setup instructions](https://github.com/civisanalytics/async-graph-data-flow#setting-up-a-development-environment)):
+
 ```bash
-flake8 src tests examples
-black --check src tests examples
-pytest
+uv run flake8 src tests examples
+uv run black --check src tests examples
+uv run pytest
 ```
