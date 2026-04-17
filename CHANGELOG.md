@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - Python 3.14 is officially supported and tested on CI. (#16)
+- `AsyncGraph.add_node` now accepts `functools.partial` objects and functions
+  decorated with `functools.wraps` as node functions. The default node name and
+  the async-generator function check resolve through the embedded function, so
+  neither `name=` nor `check_async_gen=False` is required in these cases. (#16)
 
 ### Changed
 - Migrated from CircleCI to GitHub Actions for builds and releases. (#16)

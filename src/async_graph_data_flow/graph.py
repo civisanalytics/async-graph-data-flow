@@ -1,4 +1,5 @@
 import asyncio
+import functools
 import inspect
 from collections import OrderedDict
 from collections.abc import AsyncGenerator, Callable
@@ -51,8 +52,15 @@ class AsyncGraph:
             The asynchronous generator function that this node runs.
             See notes below for the function's requirements.
         name : str, optional
-            The name of this node. If not provided, the ``__name__`` attribute
-            ``func`` is used.
+            The name of this node. If not provided, the name is taken from
+            the node function's ``__name__``, resolved as follows:
+
+            * If ``func`` is a :func:`functools.partial` object, use
+              ``func.func.__name__``.
+            * If ``func`` has a ``__wrapped__`` attribute (because it was
+              decorated via :func:`functools.wraps`), use
+              ``func.__wrapped__.__name__``.
+            * Otherwise, use ``func.__name__``.
         halt_on_exception : bool, optional
             To halt graph execution when this node has an unhandled exception,
             set this argument to ``True``. Defaults to ``False``.
@@ -73,10 +81,12 @@ class AsyncGraph:
             If ``None`` or not given, it defaults to an unbounded ``asyncio.Queue()``.
         check_async_gen : bool, optional
             If ``True`` (the default), the callable ``func`` is verified to be an async
-            generator function by :func:`inspect.isasyncgenfunction`.
-            Pass in ``False`` to disable this check if ``func`` would fail the check
-            while the callable under the hood is still an async generator function
-            (e.g., your function is wrapped by a decorator).
+            generator function by :func:`inspect.isasyncgenfunction`. If ``func`` is a
+            :func:`functools.partial` object, or if it has a ``__wrapped__`` attribute
+            set by :func:`functools.wraps`, the embedded function is checked instead.
+            Pass in ``False`` to disable this check if ``func`` would still fail the
+            check after that unwrapping (e.g., your decorator doesn't use
+            :func:`functools.wraps`).
 
         Notes
         -----
@@ -129,8 +139,9 @@ class AsyncGraph:
             own default values.
         """  # noqa: E501
 
-        name = name or func.__name__
-        if check_async_gen and not inspect.isasyncgenfunction(func):
+        embedded_func = self._get_embedded_func(func)
+        name = name or embedded_func.__name__
+        if check_async_gen and not inspect.isasyncgenfunction(embedded_func):
             raise TypeError(f"node '{name}' isn't an async generator function")
         if name in self._nodes:
             raise ValueError(f"node '{name}' already exists in the graph")
@@ -145,6 +156,22 @@ class AsyncGraph:
             unpack_input=unpack_input,
         )
         self._nodes_to_edges[name] = set()
+
+    @staticmethod
+    def _get_embedded_func(
+        func: Callable[..., AsyncGenerator],
+    ) -> Callable[..., AsyncGenerator]:
+        """Resolve the underlying function for name and async-gen detection.
+
+        If ``func`` is a :func:`functools.partial`, return ``func.func``.
+        If ``func`` has a ``__wrapped__`` attribute (set by :func:`functools.wraps`),
+        return ``func.__wrapped__``. Otherwise, return ``func`` unchanged.
+        """
+        if isinstance(func, functools.partial):
+            return func.func
+        if hasattr(func, "__wrapped__"):
+            return func.__wrapped__
+        return func
 
     def add_edge(
         self,

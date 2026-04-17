@@ -1,3 +1,4 @@
+import functools
 import inspect
 from unittest import mock
 
@@ -63,6 +64,66 @@ class TestAsyncGraphAddNode:
             "node 'some_func' isn't an async generator function"
         )
         AsyncGraph().add_node(some_func, check_async_gen=False)
+
+    def test_add_node_with_functools_partial(self):
+        async def producer(prefix, message):
+            yield f"{prefix}:{message}"
+
+        partial_producer = functools.partial(producer, "hello")
+
+        graph = AsyncGraph()
+        graph.add_node(partial_producer)
+
+        assert "producer" in graph._nodes
+        assert graph._nodes["producer"].name == "producer"
+        assert graph._nodes["producer"].func is partial_producer
+
+    def test_add_node_with_functools_partial_explicit_name(self):
+        async def producer(prefix, message):
+            yield f"{prefix}:{message}"
+
+        partial_producer = functools.partial(producer, "hello")
+
+        graph = AsyncGraph()
+        graph.add_node(partial_producer, name="custom")
+
+        assert "custom" in graph._nodes
+        assert "producer" not in graph._nodes
+        assert graph._nodes["custom"].func is partial_producer
+
+    def test_add_node_with_functools_partial_non_async_gen(self):
+        def not_async_gen(prefix, message):
+            return f"{prefix}:{message}"
+
+        partial_fn = functools.partial(not_async_gen, "hello")
+
+        with pytest.raises(TypeError) as excinfo:
+            AsyncGraph().add_node(partial_fn)
+        assert str(excinfo.value) == (
+            "node 'not_async_gen' isn't an async generator function"
+        )
+
+    def test_add_node_with_functools_wraps_decorator(self):
+        async def some_func():
+            yield "foo"
+
+        def some_decorator(func):
+            @functools.wraps(func)
+            def inner_func(*args, **kwargs):
+                return func(*args, **kwargs)
+
+            return inner_func
+
+        wrapped = some_decorator(some_func)
+
+        # The wrapper itself is not an async generator function, but because
+        # functools.wraps sets __wrapped__, add_node unwraps to the inner
+        # async generator and the check passes without check_async_gen=False.
+        assert not inspect.isasyncgenfunction(wrapped)
+        graph = AsyncGraph()
+        graph.add_node(wrapped)
+        assert "some_func" in graph._nodes
+        assert graph._nodes["some_func"].func is wrapped
 
     def test_add_node_with_valid_node_args(self):
         etl_graph = async_graph_without_nodes_mock()

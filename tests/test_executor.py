@@ -1,4 +1,5 @@
 import asyncio
+import functools
 import time
 
 import pytest
@@ -73,6 +74,34 @@ def test_async_executor_linear():
     assert etl_executor.data_flow_stats["load"].get("in") == 2
     assert etl_executor.data_flow_stats["load"].get("out") == 2
     assert etl_executor.data_flow_stats["load"].get("err") == 0
+
+
+def test_async_executor_with_functools_partial_node():
+    async def transform(prefix, data):
+        yield f"{prefix}:{data}"
+
+    async def extract():
+        yield "hello"
+        yield "world"
+
+    collected: list[str] = []
+
+    async def load(data):
+        collected.append(data)
+        yield
+
+    partial_transform = functools.partial(transform, "greet")
+
+    etl_graph = AsyncGraph()
+    etl_graph.add_node(extract)
+    etl_graph.add_node(partial_transform)
+    etl_graph.add_node(load)
+    etl_graph.add_edge("extract", "transform")
+    etl_graph.add_edge("transform", "load")
+
+    AsyncExecutor(etl_graph).execute()
+
+    assert collected == ["greet:hello", "greet:world"]
 
 
 def test_async_executor_linear_with_exception_with_halt():
