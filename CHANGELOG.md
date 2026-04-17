@@ -13,9 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   decorated with `functools.wraps` as node functions. The default node name and
   the async-generator function check resolve through the embedded function, so
   neither `name=` nor `check_async_gen=False` is required in these cases. (#16)
+- Added GitHub Actions for PyPI releases. (#16)
 
 ### Changed
-- Migrated from CircleCI to GitHub Actions for builds and releases. (#16)
 
 ### Deprecated
 
