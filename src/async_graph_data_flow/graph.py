@@ -253,6 +253,28 @@ class AsyncGraph:
                 return True
         return False
 
+    def _topological_sort(self) -> list[str]:
+        """Return node names in a topological order (sources before sinks).
+
+        Ties are broken by node insertion order so the result is deterministic.
+        The graph is guaranteed acyclic by :meth:`add_edge`, so this always succeeds.
+        """
+        indegree: dict[str, int] = {name: 0 for name in self._nodes}
+        for dst_nodes in self._nodes_to_edges.values():
+            for dst in dst_nodes:
+                indegree[dst] += 1
+
+        ready = [name for name in self._nodes if indegree[name] == 0]
+        ordered: list[str] = []
+        while ready:
+            name = ready.pop(0)
+            ordered.append(name)
+            for dst in self._nodes_to_edges[name]:
+                indegree[dst] -= 1
+                if indegree[dst] == 0:
+                    ready.append(dst)
+        return ordered
+
     def _get_start_nodes(self) -> set[str]:
         root_nodes = set()
         for src_node in self._nodes_to_edges.keys():

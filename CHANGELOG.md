@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed
 
 ### Fixed
+- Fixed a bug where tail items could be dropped when nodes were not added in
+  topological order. Queues are now drained in topological order. (#16)
 
 ### Security
 

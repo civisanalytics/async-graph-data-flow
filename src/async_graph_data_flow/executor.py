@@ -300,8 +300,8 @@ class AsyncExecutor:
 
         await self._producer()
 
-        for queue in self._node_queues.values():
-            await queue.join()
+        for node_name in self._graph._topological_sort():
+            await self._node_queues[node_name].join()
 
         for task in self._consumer_tasks.values():
             task.cancel()
