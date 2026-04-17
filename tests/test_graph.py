@@ -85,7 +85,6 @@ class TestAsyncGraphAddNode:
                 "max_tasks": 1,
                 "name": "extract_node",
                 "queue": None,
-                "queue_size": 10_000,
                 "unpack_input": True,
             },
             {
@@ -94,7 +93,6 @@ class TestAsyncGraphAddNode:
                 "max_tasks": 1,
                 "name": "transform_node",
                 "queue": None,
-                "queue_size": 10_000,
                 "unpack_input": True,
             },
             {
@@ -103,7 +101,6 @@ class TestAsyncGraphAddNode:
                 "max_tasks": 1,
                 "name": "load_node",
                 "queue": None,
-                "queue_size": 10_000,
                 "unpack_input": True,
             },
         ]

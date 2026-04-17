@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Deprecated
 
 ### Removed
+- Removed the `queue_size` argument at `add_node`, deprecated in v1.6.0.
+  To configure queue size, pass a pre-sized `asyncio.Queue` via the `queue`
+  argument instead. (#16)
 
 ### Fixed
 - Fixed a bug where tail items could be dropped when nodes were not added in

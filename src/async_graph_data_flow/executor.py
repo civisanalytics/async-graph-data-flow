@@ -286,7 +286,7 @@ class AsyncExecutor:
 
         for node_name, node in self._graph._nodes.items():
             if node.queue is None:
-                queue = asyncio.Queue(maxsize=node.queue_size)
+                queue = asyncio.Queue()
             else:
                 queue = node.queue
             self._node_queues[node_name] = queue
@@ -333,7 +333,7 @@ class AsyncExecutor:
             Each key in this dictionary is the name (str) of the node function,
             and its corresponding value is the args (tuple)
             (in which case the node function will be called as ``func(*args)``
-            -- provide ``None`` if you want ``func()`` with no args).
+            -- provide ``()`` (an empty tuple) if you want ``func()`` with no args).
             If ``start_nodes`` is ``None`` or isn't provided,
             nodes that have no incoming edges are treated as start nodes.
         """

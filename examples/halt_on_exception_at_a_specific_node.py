@@ -34,7 +34,7 @@ async def output(data):
 
 if __name__ == "__main__":
     etl_graph = AsyncGraph()
-    etl_graph.add_node(extract, name="extract", max_tasks=1, queue_size=1_000)
+    etl_graph.add_node(extract, name="extract", max_tasks=1)
     etl_graph.add_node(transform)
     etl_graph.add_node(load, halt_on_exception=True)
     etl_graph.add_node(output)

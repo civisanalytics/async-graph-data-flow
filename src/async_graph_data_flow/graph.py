@@ -13,7 +13,6 @@ class _Node(NamedTuple):
     func: Callable[..., AsyncGenerator]
     name: str
     queue: asyncio.Queue | None
-    queue_size: int
     max_tasks: int
     halt_on_exception: bool
     unpack_input: bool
@@ -42,7 +41,6 @@ class AsyncGraph:
         unpack_input: bool = True,
         max_tasks: int = 1,
         queue: asyncio.Queue | None = None,
-        queue_size: int = 10_000,
         check_async_gen: bool = True,
     ) -> None:
         """Add a node by providing its function and optional configurations.
@@ -72,17 +70,7 @@ class AsyncGraph:
             with items retrieved by ``await queue.get()``.
             This queue object must be an instance of either :class:`~asyncio.Queue` or
             a subclass of :class:`~asyncio.Queue`.
-            If ``None`` or not given, it defaults to an ``asyncio.Queue()`` with max
-            size set by ``queue_size``.
-        queue_size : int, optional
-            The maximum number of data items allowed to be
-            in the queue object between this node as a destination node
-            and its source node(s).
-
-            .. deprecated:: 1.6.0
-                The argument ``queue_size`` is deprecated and will be removed in
-                v2.0.0. To configure the queue size, please use the argument ``queue``
-                for a queue object whose queue size is set.
+            If ``None`` or not given, it defaults to an unbounded ``asyncio.Queue()``.
         check_async_gen : bool, optional
             If ``True`` (the default), the callable ``func`` is verified to be an async
             generator function by :func:`inspect.isasyncgenfunction`.
@@ -152,7 +140,6 @@ class AsyncGraph:
             func=func,
             name=name,
             queue=queue,
-            queue_size=queue_size,
             max_tasks=max_tasks,
             halt_on_exception=halt_on_exception,
             unpack_input=unpack_input,

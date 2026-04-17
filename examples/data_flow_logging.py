@@ -24,7 +24,7 @@ async def load(data):
 if __name__ == "__main__":
     logging.basicConfig(level="INFO")
     etl_graph = AsyncGraph()
-    etl_graph.add_node(extract, name="extract", max_tasks=1, queue_size=1_000)
+    etl_graph.add_node(extract, name="extract", max_tasks=1)
     etl_graph.add_node(transform)
     etl_graph.add_node(load)
     etl_graph.add_edge("extract", "transform")
