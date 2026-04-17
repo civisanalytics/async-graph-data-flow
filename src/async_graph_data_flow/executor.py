@@ -9,7 +9,6 @@ from typing import Any
 
 from .graph import AsyncGraph, InvalidAsyncGraphError
 
-
 _LOG = logging.getLogger(__name__)
 
 _DEFAULT_DATA_FLOW_LOGGING_NODE_FORMAT = " {node} - in={in}, out={out}, err={err}"

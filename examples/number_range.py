@@ -2,7 +2,6 @@ import asyncio
 
 from async_graph_data_flow import AsyncExecutor, AsyncGraph
 
-
 BUFFER = 3
 count = 0
 batch_list = []
