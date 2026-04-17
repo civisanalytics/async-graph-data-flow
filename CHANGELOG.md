@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased] - YYYY-MM-DD
 
 ### Added
+- Python 3.14 is officially supported and tested on CI. (#16)
 
 ### Changed
 - Migrated from CircleCI to GitHub Actions for builds and releases. (#16)
