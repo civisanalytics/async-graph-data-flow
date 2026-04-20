@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 ### Security
 
-## [2.0.0] - 2026-04-22
+## [2.0.0] - 2026-04-21
 
 ### Added
 - Python 3.14 is officially supported and tested on CI. (#16)
