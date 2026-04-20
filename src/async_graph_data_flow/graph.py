@@ -229,29 +229,16 @@ class AsyncGraph:
         i: int,
         is_checked: list[bool],
         iter_stack: list[bool],
-        graph: dict[str, set[str]],
+        nodes: list[str],
     ) -> bool:
         """Code based on: https://www.geeksforgeeks.org/detect-cycle-in-a-graph/"""
-        # Use the OrderedDict self._nodes_to_edges for its ordering.
-        nodes = list(self._nodes_to_edges.keys())
         is_checked[i] = True
         iter_stack[i] = True
 
-        try:
-            dst_nodes = graph[nodes[i]]
-        except KeyError:
-            iter_stack[i] = False
-            return False
-
-        for dst_node in dst_nodes:
-            try:
-                edge_pos = nodes.index(dst_node)
-            except ValueError:
-                iter_stack[i] = False
-                return False
-
+        for dst_node in self._nodes_to_edges[nodes[i]]:
+            edge_pos = nodes.index(dst_node)
             if not is_checked[edge_pos] and self._graph_validator(
-                edge_pos, is_checked, iter_stack, graph
+                edge_pos, is_checked, iter_stack, nodes
             ):
                 return True
             elif iter_stack[edge_pos]:
@@ -261,11 +248,12 @@ class AsyncGraph:
         return False
 
     def _is_graph_cyclic(self) -> bool:
-        """Code based on: https://www.geeksforgeeks.org/detect-cycle-in-a-graph/"""
-        iter_stack = is_checked = [False] * (len(self._nodes) + 1)
-        for i in range(len(self._nodes)):
+        nodes = list(self._nodes_to_edges.keys())
+        is_checked = [False] * len(nodes)
+        iter_stack = [False] * len(nodes)
+        for i in range(len(nodes)):
             if not is_checked[i] and self._graph_validator(
-                i, is_checked, iter_stack, self._nodes_to_edges
+                i, is_checked, iter_stack, nodes
             ):
                 return True
         return False
@@ -294,14 +282,8 @@ class AsyncGraph:
         return ordered
 
     def _get_start_nodes(self) -> set[str]:
-        root_nodes = set()
-        for src_node in self._nodes_to_edges.keys():
-            root_node = True
-            for dst_nodes in self._nodes_to_edges.values():
-                if src_node in dst_nodes:
-                    root_node = False
-                    break
-
-            if root_node:
-                root_nodes.add(src_node)
-        return root_nodes
+        indegree: dict[str, int] = {name: 0 for name in self._nodes}
+        for dst_nodes in self._nodes_to_edges.values():
+            for dst in dst_nodes:
+                indegree[dst] += 1
+        return {name for name, d in indegree.items() if d == 0}

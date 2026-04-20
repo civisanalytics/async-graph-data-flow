@@ -60,7 +60,7 @@ Choose whether to halt execution at a specific node or any node.
 
 * **Lightweight** 🪶
 
-The source code is only about 400 lines!
+The source code is only about 600 lines!
 
 * **Single-machine Usage** 💻
 

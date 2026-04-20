@@ -132,20 +132,16 @@ class AsyncExecutor:
         """
         self._data_flow_logging = True
 
-        if node_format and isinstance(node_format, str):
+        if node_format:
             self._data_flow_logging_node_format = node_format
 
-        if (
-            node_filter
-            and not isinstance(node_filter, str)
-            and all(map(lambda x: isinstance(x, str), node_filter))
-        ):
+        if node_filter:
             self._data_flow_logging_node_filter = set(node_filter)
 
-        if time_interval and isinstance(time_interval, int):
+        if time_interval:
             self._data_flow_logging_time_interval = time_interval
 
-        if logger and isinstance(logger, logging.Logger):
+        if logger:
             self._logger = logger
 
     def turn_off_data_flow_logging(self) -> None:
