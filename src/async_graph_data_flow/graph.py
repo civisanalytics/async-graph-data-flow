@@ -163,15 +163,18 @@ class AsyncGraph:
     ) -> Callable[..., AsyncGenerator]:
         """Resolve the underlying function for name and async-gen detection.
 
-        If ``func`` is a :func:`functools.partial`, return ``func.func``.
-        If ``func`` has a ``__wrapped__`` attribute (set by :func:`functools.wraps`),
-        return ``func.__wrapped__``. Otherwise, return ``func`` unchanged.
+        Repeatedly unwraps :func:`functools.partial` objects and callables with
+        a ``__wrapped__`` attribute (set by :func:`functools.wraps`), so that
+        stacked decorators and ``partial(wrapped_func)`` combinations resolve
+        to the innermost function.
         """
-        if isinstance(func, functools.partial):
-            return func.func
-        if hasattr(func, "__wrapped__"):
-            return func.__wrapped__
-        return func
+        while True:
+            if isinstance(func, functools.partial):
+                func = func.func
+            elif hasattr(func, "__wrapped__"):
+                func = func.__wrapped__
+            else:
+                return func
 
     def add_edge(
         self,
@@ -188,12 +191,12 @@ class AsyncGraph:
             The destination node, either the function name or the function itself.
         """
         if not isinstance(src_node, str):
-            src_node = src_node.__name__
+            src_node = self._get_embedded_func(src_node).__name__
         if src_node not in self._nodes:
             raise ValueError(f"src_node '{src_node}' not registered in the graph")
 
         if not isinstance(dst_node, str):
-            dst_node = dst_node.__name__
+            dst_node = self._get_embedded_func(dst_node).__name__
         if dst_node not in self._nodes:
             raise ValueError(f"dst_node '{dst_node}' not registered in the graph")
 
@@ -270,7 +273,8 @@ class AsyncGraph:
     def _topological_sort(self) -> list[str]:
         """Return node names in a topological order (sources before sinks).
 
-        Ties are broken by node insertion order so the result is deterministic.
+        Sibling order among nodes at the same depth is unspecified (the
+        underlying edge storage is a ``set``). Callers must not rely on it.
         The graph is guaranteed acyclic by :meth:`add_edge`, so this always succeeds.
         """
         indegree: dict[str, int] = {name: 0 for name in self._nodes}

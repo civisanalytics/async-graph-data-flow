@@ -196,6 +196,40 @@ class TestAsyncGraphAddEdge:
         assert len(etl_graph.edges) == 1
         assert etl_graph.edges == {("extract_node", "transform_node")}
 
+    def test_add_edge_with_functools_partial_callable(self):
+        async def producer(prefix, message):
+            yield f"{prefix}:{message}"
+
+        async def consumer(message):
+            yield message
+
+        partial_producer = functools.partial(producer, "hello")
+
+        graph = AsyncGraph()
+        graph.add_node(partial_producer)
+        graph.add_node(consumer)
+        graph.add_edge(src_node=partial_producer, dst_node=consumer)
+
+        assert graph.edges == {("producer", "consumer")}
+
+    def test_add_node_unwraps_stacked_wrappers(self):
+        async def some_func():
+            yield "foo"
+
+        def outer(func):
+            @functools.wraps(func)
+            def inner(*args, **kwargs):
+                return func(*args, **kwargs)
+
+            return inner
+
+        doubly_wrapped = outer(outer(some_func))
+        partial_over_wrapped = functools.partial(doubly_wrapped)
+
+        graph = AsyncGraph()
+        graph.add_node(partial_over_wrapped)
+        assert "some_func" in graph._nodes
+
     def test_add_edge_graph_acyclic(self):
         etl_graph = async_graph_with_nodes_mock()
 
