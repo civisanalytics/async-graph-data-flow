@@ -1,4 +1,5 @@
 import asyncio
+import functools
 import time
 
 import pytest
@@ -73,6 +74,34 @@ def test_async_executor_linear():
     assert etl_executor.data_flow_stats["load"].get("in") == 2
     assert etl_executor.data_flow_stats["load"].get("out") == 2
     assert etl_executor.data_flow_stats["load"].get("err") == 0
+
+
+def test_async_executor_with_functools_partial_node():
+    async def transform(prefix, data):
+        yield f"{prefix}:{data}"
+
+    async def extract():
+        yield "hello"
+        yield "world"
+
+    collected: list[str] = []
+
+    async def load(data):
+        collected.append(data)
+        yield
+
+    partial_transform = functools.partial(transform, "greet")
+
+    etl_graph = AsyncGraph()
+    etl_graph.add_node(extract)
+    etl_graph.add_node(partial_transform)
+    etl_graph.add_node(load)
+    etl_graph.add_edge("extract", "transform")
+    etl_graph.add_edge("transform", "load")
+
+    AsyncExecutor(etl_graph).execute()
+
+    assert collected == ["greet:hello", "greet:world"]
 
 
 def test_async_executor_linear_with_exception_with_halt():
@@ -469,3 +498,72 @@ def test_graph_with_no_edges():
 
     executor.execute(start_nodes={"node1": ("foo",)})
     assert executor.start_nodes == {"node1": ("foo",)}
+
+
+def test_diamond_dag_reverse_insertion_order():
+    """Regression test for issue #15: tail items must be processed even when
+    nodes are added in reverse topological order (sink before sources)."""
+    sink_items: list[int] = []
+
+    async def src():
+        for i in range(4):
+            yield i
+
+    async def branch_a(x):
+        yield x
+
+    async def branch_b(x):
+        yield x + 100
+
+    async def sink(x):
+        sink_items.append(x)
+        yield
+
+    graph = AsyncGraph()
+    graph.add_node(sink, unpack_input=False)
+    graph.add_node(branch_b, unpack_input=False)
+    graph.add_node(branch_a, unpack_input=False)
+    graph.add_node(src, unpack_input=False)
+
+    graph.add_edge(src, branch_a)
+    graph.add_edge(src, branch_b)
+    graph.add_edge(branch_a, sink)
+    graph.add_edge(branch_b, sink)
+
+    AsyncExecutor(graph).execute()
+
+    assert sorted(sink_items) == [0, 1, 2, 3, 100, 101, 102, 103]
+
+
+def test_diamond_dag_forward_insertion_order():
+    """Symmetric sanity check: adding nodes in forward topological order still works."""
+    sink_items: list[int] = []
+
+    async def src():
+        for i in range(4):
+            yield i
+
+    async def branch_a(x):
+        yield x
+
+    async def branch_b(x):
+        yield x + 100
+
+    async def sink(x):
+        sink_items.append(x)
+        yield
+
+    graph = AsyncGraph()
+    graph.add_node(src, unpack_input=False)
+    graph.add_node(branch_a, unpack_input=False)
+    graph.add_node(branch_b, unpack_input=False)
+    graph.add_node(sink, unpack_input=False)
+
+    graph.add_edge(src, branch_a)
+    graph.add_edge(src, branch_b)
+    graph.add_edge(branch_a, sink)
+    graph.add_edge(branch_b, sink)
+
+    AsyncExecutor(graph).execute()
+
+    assert sorted(sink_items) == [0, 1, 2, 3, 100, 101, 102, 103]

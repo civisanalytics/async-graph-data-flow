@@ -9,7 +9,6 @@ from typing import Any
 
 from .graph import AsyncGraph, InvalidAsyncGraphError
 
-
 _LOG = logging.getLogger(__name__)
 
 _DEFAULT_DATA_FLOW_LOGGING_NODE_FORMAT = " {node} - in={in}, out={out}, err={err}"
@@ -133,20 +132,16 @@ class AsyncExecutor:
         """
         self._data_flow_logging = True
 
-        if node_format and isinstance(node_format, str):
+        if node_format:
             self._data_flow_logging_node_format = node_format
 
-        if (
-            node_filter
-            and not isinstance(node_filter, str)
-            and all(map(lambda x: isinstance(x, str), node_filter))
-        ):
+        if node_filter:
             self._data_flow_logging_node_filter = set(node_filter)
 
-        if time_interval and isinstance(time_interval, int):
+        if time_interval:
             self._data_flow_logging_time_interval = time_interval
 
-        if logger and isinstance(logger, logging.Logger):
+        if logger:
             self._logger = logger
 
     def turn_off_data_flow_logging(self) -> None:
@@ -286,7 +281,7 @@ class AsyncExecutor:
 
         for node_name, node in self._graph._nodes.items():
             if node.queue is None:
-                queue = asyncio.Queue(maxsize=node.queue_size)
+                queue = asyncio.Queue()
             else:
                 queue = node.queue
             self._node_queues[node_name] = queue
@@ -300,8 +295,8 @@ class AsyncExecutor:
 
         await self._producer()
 
-        for queue in self._node_queues.values():
-            await queue.join()
+        for node_name in self._graph._topological_sort():
+            await self._node_queues[node_name].join()
 
         for task in self._consumer_tasks.values():
             task.cancel()
@@ -333,7 +328,7 @@ class AsyncExecutor:
             Each key in this dictionary is the name (str) of the node function,
             and its corresponding value is the args (tuple)
             (in which case the node function will be called as ``func(*args)``
-            -- provide ``None`` if you want ``func()`` with no args).
+            -- provide ``()`` (an empty tuple) if you want ``func()`` with no args).
             If ``start_nodes`` is ``None`` or isn't provided,
             nodes that have no incoming edges are treated as start nodes.
         """

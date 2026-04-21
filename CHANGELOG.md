@@ -8,16 +8,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased] - YYYY-MM-DD
 
 ### Added
-
 ### Changed
-
 ### Deprecated
+### Removed
+### Fixed
+### Security
+
+## [2.0.0] - 2026-04-21
+
+### Added
+- Python 3.14 is officially supported and tested on CI. (#16)
+- `AsyncGraph.add_node` now accepts `functools.partial` objects and functions
+  decorated with `functools.wraps` as node functions. The default node name and
+  the async-generator function check resolve through the embedded function, so
+  neither `name=` nor `check_async_gen=False` is required in these cases. (#16)
+- Added GitHub Actions for PyPI releases. (#16)
 
 ### Removed
+- Removed the `queue_size` argument at `add_node`, deprecated in v1.6.0.
+  To configure queue size, pass a pre-sized `asyncio.Queue` via the `queue`
+  argument instead. (#16)
 
 ### Fixed
-
-### Security
+- Fixed a bug where tail items could be dropped when nodes were not added in
+  topological order. Queues are now drained in topological order. (#16)
 
 ## [1.6.0] - 2025-03-19
 

@@ -1,4 +1,5 @@
 import asyncio
+import functools
 import inspect
 from collections import OrderedDict
 from collections.abc import AsyncGenerator, Callable
@@ -13,7 +14,6 @@ class _Node(NamedTuple):
     func: Callable[..., AsyncGenerator]
     name: str
     queue: asyncio.Queue | None
-    queue_size: int
     max_tasks: int
     halt_on_exception: bool
     unpack_input: bool
@@ -42,7 +42,6 @@ class AsyncGraph:
         unpack_input: bool = True,
         max_tasks: int = 1,
         queue: asyncio.Queue | None = None,
-        queue_size: int = 10_000,
         check_async_gen: bool = True,
     ) -> None:
         """Add a node by providing its function and optional configurations.
@@ -53,8 +52,15 @@ class AsyncGraph:
             The asynchronous generator function that this node runs.
             See notes below for the function's requirements.
         name : str, optional
-            The name of this node. If not provided, the ``__name__`` attribute
-            ``func`` is used.
+            The name of this node. If not provided, the name is taken from
+            the node function's ``__name__``, resolved as follows:
+
+            * If ``func`` is a :func:`functools.partial` object, use
+              ``func.func.__name__``.
+            * If ``func`` has a ``__wrapped__`` attribute (because it was
+              decorated via :func:`functools.wraps`), use
+              ``func.__wrapped__.__name__``.
+            * Otherwise, use ``func.__name__``.
         halt_on_exception : bool, optional
             To halt graph execution when this node has an unhandled exception,
             set this argument to ``True``. Defaults to ``False``.
@@ -72,23 +78,15 @@ class AsyncGraph:
             with items retrieved by ``await queue.get()``.
             This queue object must be an instance of either :class:`~asyncio.Queue` or
             a subclass of :class:`~asyncio.Queue`.
-            If ``None`` or not given, it defaults to an ``asyncio.Queue()`` with max
-            size set by ``queue_size``.
-        queue_size : int, optional
-            The maximum number of data items allowed to be
-            in the queue object between this node as a destination node
-            and its source node(s).
-
-            .. deprecated:: 1.6.0
-                The argument ``queue_size`` is deprecated and will be removed in
-                v2.0.0. To configure the queue size, please use the argument ``queue``
-                for a queue object whose queue size is set.
+            If ``None`` or not given, it defaults to an unbounded ``asyncio.Queue()``.
         check_async_gen : bool, optional
             If ``True`` (the default), the callable ``func`` is verified to be an async
-            generator function by :func:`inspect.isasyncgenfunction`.
-            Pass in ``False`` to disable this check if ``func`` would fail the check
-            while the callable under the hood is still an async generator function
-            (e.g., your function is wrapped by a decorator).
+            generator function by :func:`inspect.isasyncgenfunction`. If ``func`` is a
+            :func:`functools.partial` object, or if it has a ``__wrapped__`` attribute
+            set by :func:`functools.wraps`, the embedded function is checked instead.
+            Pass in ``False`` to disable this check if ``func`` would still fail the
+            check after that unwrapping (e.g., your decorator doesn't use
+            :func:`functools.wraps`).
 
         Notes
         -----
@@ -141,8 +139,9 @@ class AsyncGraph:
             own default values.
         """  # noqa: E501
 
-        name = name or func.__name__
-        if check_async_gen and not inspect.isasyncgenfunction(func):
+        embedded_func = self._get_embedded_func(func)
+        name = name or embedded_func.__name__
+        if check_async_gen and not inspect.isasyncgenfunction(embedded_func):
             raise TypeError(f"node '{name}' isn't an async generator function")
         if name in self._nodes:
             raise ValueError(f"node '{name}' already exists in the graph")
@@ -152,12 +151,30 @@ class AsyncGraph:
             func=func,
             name=name,
             queue=queue,
-            queue_size=queue_size,
             max_tasks=max_tasks,
             halt_on_exception=halt_on_exception,
             unpack_input=unpack_input,
         )
         self._nodes_to_edges[name] = set()
+
+    @staticmethod
+    def _get_embedded_func(
+        func: Callable[..., AsyncGenerator],
+    ) -> Callable[..., AsyncGenerator]:
+        """Resolve the underlying function for name and async-gen detection.
+
+        Repeatedly unwraps :func:`functools.partial` objects and callables with
+        a ``__wrapped__`` attribute (set by :func:`functools.wraps`), so that
+        stacked decorators and ``partial(wrapped_func)`` combinations resolve
+        to the innermost function.
+        """
+        while True:
+            if isinstance(func, functools.partial):
+                func = func.func
+            elif hasattr(func, "__wrapped__"):
+                func = func.__wrapped__
+            else:
+                return func
 
     def add_edge(
         self,
@@ -174,12 +191,12 @@ class AsyncGraph:
             The destination node, either the function name or the function itself.
         """
         if not isinstance(src_node, str):
-            src_node = src_node.__name__
+            src_node = self._get_embedded_func(src_node).__name__
         if src_node not in self._nodes:
             raise ValueError(f"src_node '{src_node}' not registered in the graph")
 
         if not isinstance(dst_node, str):
-            dst_node = dst_node.__name__
+            dst_node = self._get_embedded_func(dst_node).__name__
         if dst_node not in self._nodes:
             raise ValueError(f"dst_node '{dst_node}' not registered in the graph")
 
@@ -212,29 +229,16 @@ class AsyncGraph:
         i: int,
         is_checked: list[bool],
         iter_stack: list[bool],
-        graph: dict[str, set[str]],
+        nodes: list[str],
     ) -> bool:
         """Code based on: https://www.geeksforgeeks.org/detect-cycle-in-a-graph/"""
-        # Use the OrderedDict self._nodes_to_edges for its ordering.
-        nodes = list(self._nodes_to_edges.keys())
         is_checked[i] = True
         iter_stack[i] = True
 
-        try:
-            dst_nodes = graph[nodes[i]]
-        except KeyError:
-            iter_stack[i] = False
-            return False
-
-        for dst_node in dst_nodes:
-            try:
-                edge_pos = nodes.index(dst_node)
-            except ValueError:
-                iter_stack[i] = False
-                return False
-
+        for dst_node in self._nodes_to_edges[nodes[i]]:
+            edge_pos = nodes.index(dst_node)
             if not is_checked[edge_pos] and self._graph_validator(
-                edge_pos, is_checked, iter_stack, graph
+                edge_pos, is_checked, iter_stack, nodes
             ):
                 return True
             elif iter_stack[edge_pos]:
@@ -244,24 +248,42 @@ class AsyncGraph:
         return False
 
     def _is_graph_cyclic(self) -> bool:
-        """Code based on: https://www.geeksforgeeks.org/detect-cycle-in-a-graph/"""
-        iter_stack = is_checked = [False] * (len(self._nodes) + 1)
-        for i in range(len(self._nodes)):
+        nodes = list(self._nodes_to_edges.keys())
+        is_checked = [False] * len(nodes)
+        iter_stack = [False] * len(nodes)
+        for i in range(len(nodes)):
             if not is_checked[i] and self._graph_validator(
-                i, is_checked, iter_stack, self._nodes_to_edges
+                i, is_checked, iter_stack, nodes
             ):
                 return True
         return False
 
-    def _get_start_nodes(self) -> set[str]:
-        root_nodes = set()
-        for src_node in self._nodes_to_edges.keys():
-            root_node = True
-            for dst_nodes in self._nodes_to_edges.values():
-                if src_node in dst_nodes:
-                    root_node = False
-                    break
+    def _topological_sort(self) -> list[str]:
+        """Return node names in a topological order (sources before sinks).
 
-            if root_node:
-                root_nodes.add(src_node)
-        return root_nodes
+        Sibling order among nodes at the same depth is unspecified (the
+        underlying edge storage is a ``set``). Callers must not rely on it.
+        The graph is guaranteed acyclic by :meth:`add_edge`, so this always succeeds.
+        """
+        indegree: dict[str, int] = {name: 0 for name in self._nodes}
+        for dst_nodes in self._nodes_to_edges.values():
+            for dst in dst_nodes:
+                indegree[dst] += 1
+
+        ready = [name for name in self._nodes if indegree[name] == 0]
+        ordered: list[str] = []
+        while ready:
+            name = ready.pop(0)
+            ordered.append(name)
+            for dst in self._nodes_to_edges[name]:
+                indegree[dst] -= 1
+                if indegree[dst] == 0:
+                    ready.append(dst)
+        return ordered
+
+    def _get_start_nodes(self) -> set[str]:
+        indegree: dict[str, int] = {name: 0 for name in self._nodes}
+        for dst_nodes in self._nodes_to_edges.values():
+            for dst in dst_nodes:
+                indegree[dst] += 1
+        return {name for name, d in indegree.items() if d == 0}

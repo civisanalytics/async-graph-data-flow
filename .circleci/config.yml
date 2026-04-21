@@ -11,7 +11,7 @@ jobs:
         type: string
     docker:
       # Pick the highest Python 3.x version that this package is known to support
-      - image: cimg/python:3.13
+      - image: cimg/python:3.14
     steps:
       - checkout
       - run:
@@ -102,7 +102,7 @@ workflows:
             - bandit
           matrix:
             parameters:
-              python-version: ["3.10", "3.11", "3.12", "3.13"]
+              python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
       - build-python-win:
           requires:
             - flake8

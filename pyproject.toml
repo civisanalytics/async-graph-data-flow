@@ -1,14 +1,14 @@
 [build-system]
-requires = ["setuptools >= 69.0.0", "wheel"]
+requires = ["setuptools >= 77.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "async-graph-data-flow"
-version = "1.6.0"
-description = "Asynchronous functions that pass data along a directed acyclic graph"
+version = "2.0.0"
+description = "Data flow along a directed acyclic graph of asynchronous generator functions"
 readme = "README.md"
 requires-python = ">= 3.10"
-license = { text = "BSD 3-Clause" }
+license = "BSD-3-Clause"
 authors = [ { name = "Civis Analytics", email = "opensource@civisanalytics.com" } ]
 keywords = [
     "async",
@@ -22,7 +22,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "Intended Audience :: Information Technology",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
@@ -30,6 +29,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Framework :: AsyncIO",
 ]
 
@@ -40,21 +40,21 @@ Source = "https://github.com/civisanalytics/async-graph-data-flow"
 [project.optional-dependencies]
 dev = [
     # Running tests and linters
-    "black == 25.1.0",
-    "flake8 == 7.1.2",
-    "pytest == 8.3.5",
-    "mypy == 1.15.0",
+    "black",
+    "flake8",
+    "pytest",
+    "mypy",
 
     # Managing source distributions
-    "build == 1.2.2",
-    "twine == 6.1.0",
+    "build",
+    "twine",
 ]
 docs = [
-    "Sphinx == 8.2.3",
-    "furo == 2024.8.6",
-    "numpydoc == 1.8.0",
-    "sphinx-copybutton == 0.5.2",
-    "sphinxcontrib-mermaid == 1.0.0",
+    "Sphinx",
+    "furo",
+    "numpydoc",
+    "sphinx-copybutton",
+    "sphinxcontrib-mermaid",
 ]
 
 [tool.setuptools.packages.find]
