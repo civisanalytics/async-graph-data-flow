@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed
 ### Fixed
 ### Security
+- Resolved GHSA-6q48-6c7w-9gw2
+  by updating certifi to v2026.10.23 in requirements for Sphinx docs. (#17)
 
 ## [2.0.0] - 2026-04-21
 
