@@ -8,14 +8,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased] - YYYY-MM-DD
 
 ### Added
-- Python 3.15 is officially supported and tested on CI. (#18)
-
 ### Changed
 ### Deprecated
 ### Removed
+### Fixed
+### Security
+
+## [2.1.0] - 2026-11-02
+
+### Added
+- Python 3.15 is officially supported and tested on CI. (#18)
+
+### Removed
 - Dropped support for Python 3.10. (#18)
 
-### Fixed
 ### Security
 - Resolved GHSA-6q48-6c7w-9gw2
   by updating certifi to v2026.10.23 in requirements for Sphinx docs. (#17)
