@@ -8,9 +8,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased] - YYYY-MM-DD
 
 ### Added
+- Python 3.15 is officially supported and tested on CI. (#18)
+
 ### Changed
 ### Deprecated
 ### Removed
+- Dropped support for Python 3.10. (#18)
+
 ### Fixed
 ### Security
 - Resolved GHSA-6q48-6c7w-9gw2
